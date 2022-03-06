@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Reading Assistant</string>
+    <string name="media_player">Read Aloud</string>
 </resources>
