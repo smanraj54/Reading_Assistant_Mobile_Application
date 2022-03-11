@@ -1,77 +1,113 @@
 package com.example.readingassistant
 
+import android.annotation.SuppressLint
 import android.media.MediaPlayer
-import android.media.MediaPlayer.OnCompletionListener
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+
+import android.view.MotionEvent
 import android.widget.ImageButton
 import android.widget.SeekBar
-import android.widget.Toast
 import androidx.core.view.isVisible
 
 class MediaPlayerActivity : AppCompatActivity() {
+
+    var mediaPlayer: MediaPlayer? = null
+    lateinit var playButton: ImageButton
+    lateinit var pauseButton: ImageButton
+
+    @SuppressLint("ClickableViewAccessibility") //fix this
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_media_player)
 
-
-        val playButton: ImageButton = findViewById(R.id.playButton)
-        val pauseButton: ImageButton = findViewById(R.id.pauseButton)
+        playButton = findViewById(R.id.playButton)
+        pauseButton = findViewById(R.id.pauseButton)
         val fastForwardButton: ImageButton = findViewById(R.id.fastForwardButton)
         val rewindButton: ImageButton = findViewById(R.id.rewindButton)
         val seekBar: SeekBar = findViewById(R.id.seekBar)
 
+        var testAudio = R.raw.lofi_study_music ///change
 
-        var mediaPlayer: MediaPlayer? = null
-        var testAudio = R.raw.lofi_study_music;
 
         pauseButton.isVisible = false
 
-        //https://www.youtube.com/watch?v=a3yLc9J0hGE&ab_channel=CodePalace
+
         playButton.setOnClickListener {
-            println("pressed play")
-
             if (mediaPlayer == null) {
-                mediaPlayer = MediaPlayer.create(this,testAudio) //change to accept file
-                seekBar.max = mediaPlayer!!.duration
 
+               mediaPlayer = MediaPlayer.create(this, testAudio) //change to accept file
+               seekBar.max = mediaPlayer!!.duration
 
-                val handler: Handler = Handler() //fix
+                val handler: Handler = Handler(Looper.getMainLooper())
                 val runnable = object : Runnable {
                     override fun run() {
                         seekBar.progress = mediaPlayer!!.currentPosition
-                        handler.postDelayed(this,1000)
+                        handler.postDelayed(this, 1000)
                     }
                 }
                 handler.post(runnable)
             }
-
-
-
-            mediaPlayer?.start()
+            mediaPlayer!!.start()
 
             playButton.isVisible = false
             pauseButton.isVisible = true
         }
 
         pauseButton.setOnClickListener {
-            println("pressed pause")
-
             mediaPlayer?.pause()
-
             playButton.isVisible = true
             pauseButton.isVisible = false
         }
 
-        fastForwardButton.setOnClickListener {
-            println("pressed fastforward")
+        var fastForwarding: Boolean
+        fastForwardButton.setOnTouchListener { _, motionEvent ->
+            if (motionEvent.action == MotionEvent.ACTION_DOWN) {
+                fastForwarding = true
+                val handler: Handler = Handler(Looper.getMainLooper())
+                val runnable = object : Runnable {
+                    override fun run() {
+                        if (fastForwarding) {
+                            if (mediaPlayer!!.currentPosition + 2000 >= mediaPlayer!!.duration) {
+                                mediaPlayer!!.seekTo(mediaPlayer!!.duration)
+                            } else {
+                                mediaPlayer!!.seekTo(mediaPlayer!!.currentPosition.plus(2000))
+                                handler.postDelayed(this, 500)
+                            }
+                        }
+                    }
+                }
+                handler.post(runnable)
+            }
+            if (motionEvent.action == MotionEvent.ACTION_UP) {
+                fastForwarding = false
+            }
+            true
         }
 
-        rewindButton.setOnClickListener {
-            println("pressed rewind")
+        var rewinding: Boolean
+        rewindButton.setOnTouchListener { _, motionEvent ->
+            if (motionEvent.action == MotionEvent.ACTION_DOWN) {
+                rewinding = true
+                val handler: Handler = Handler(Looper.getMainLooper())
+                val runnable = object : Runnable {
+                    override fun run() {
+                        if (rewinding) {
+                            mediaPlayer?.seekTo(mediaPlayer!!.currentPosition.minus(2000))
+                            handler.postDelayed(this, 500)
+                        }
+                    }
+                }
+                handler.post(runnable)
+            }
+            if (motionEvent.action == MotionEvent.ACTION_UP) {
+                rewinding = false
+            }
+            true
         }
+
 
         seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(p0: SeekBar?, p1: Int, p2: Boolean) {
@@ -97,4 +133,26 @@ class MediaPlayerActivity : AppCompatActivity() {
         })
     }
 
+    override fun onPause() {
+        pause()
+        super.onPause()
+    }
+
+    override fun onDestroy() {
+        mediaPlayer?.stop()
+        mediaPlayer?.release()
+        super.onDestroy()
+    }
+
+    fun pause(){
+        mediaPlayer?.pause()
+        playButton.isVisible = true
+        pauseButton.isVisible = false
+    }
+
+    fun play(){
+        mediaPlayer?.start()
+        playButton.isVisible = false
+        pauseButton.isVisible = true
+    }
 }
