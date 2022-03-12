@@ -2,6 +2,7 @@ package com.example.readingassistant
 
 import android.annotation.SuppressLint
 import android.media.MediaPlayer
+import android.media.PlaybackParams
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
@@ -18,7 +19,7 @@ class MediaPlayerActivity : AppCompatActivity() {
     lateinit var playButton: ImageButton
     lateinit var pauseButton: ImageButton
 
-    @SuppressLint("ClickableViewAccessibility") //fix this
+    @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_media_player)
@@ -27,6 +28,8 @@ class MediaPlayerActivity : AppCompatActivity() {
         pauseButton = findViewById(R.id.pauseButton)
         val fastForwardButton: ImageButton = findViewById(R.id.fastForwardButton)
         val rewindButton: ImageButton = findViewById(R.id.rewindButton)
+        val increaseButton: ImageButton = findViewById(R.id.increaseButton)
+        val decreaseButton: ImageButton = findViewById(R.id.decreaseButton)
         val seekBar: SeekBar = findViewById(R.id.seekBar)
 
         var testAudio = R.raw.lofi_study_music ///change
@@ -50,36 +53,56 @@ class MediaPlayerActivity : AppCompatActivity() {
                 }
                 handler.post(runnable)
             }
-            mediaPlayer!!.start()
-
-            playButton.isVisible = false
-            pauseButton.isVisible = true
+            play()
         }
 
         pauseButton.setOnClickListener {
-            mediaPlayer?.pause()
-            playButton.isVisible = true
-            pauseButton.isVisible = false
+            pause()
+        }
+
+
+        val params: PlaybackParams = PlaybackParams().setSpeed(1F)
+
+        increaseButton.setOnClickListener {
+            println(params.speed)
+            if (params.speed<2) {
+                if (mediaPlayer != null) {
+                    params.speed += 0.25F
+                    mediaPlayer!!.playbackParams = params
+                }
+            }
+        }
+
+        decreaseButton.setOnClickListener {
+            println(params.speed)
+            if (params.speed>0.5) {
+                if (mediaPlayer!=null){
+                    params.speed -= 0.25F
+                    mediaPlayer!!.playbackParams = params
+                }
+            }
         }
 
         var fastForwarding: Boolean
         fastForwardButton.setOnTouchListener { _, motionEvent ->
-            if (motionEvent.action == MotionEvent.ACTION_DOWN) {
-                fastForwarding = true
-                val handler: Handler = Handler(Looper.getMainLooper())
-                val runnable = object : Runnable {
-                    override fun run() {
-                        if (fastForwarding) {
-                            if (mediaPlayer!!.currentPosition + 2000 >= mediaPlayer!!.duration) {
-                                mediaPlayer!!.seekTo(mediaPlayer!!.duration)
-                            } else {
-                                mediaPlayer!!.seekTo(mediaPlayer!!.currentPosition.plus(2000))
-                                handler.postDelayed(this, 500)
+            if (mediaPlayer != null) {
+                    if (motionEvent.action == MotionEvent.ACTION_DOWN) {
+                    fastForwarding = true
+                    val handler: Handler = Handler(Looper.getMainLooper())
+                    val runnable = object : Runnable {
+                        override fun run() {
+                            if (fastForwarding) {
+                                if (mediaPlayer!!.currentPosition + 2000 >= mediaPlayer!!.duration) {
+                                    mediaPlayer!!.seekTo(mediaPlayer!!.duration)
+                                } else {
+                                    mediaPlayer!!.seekTo(mediaPlayer!!.currentPosition.plus(2000))
+                                    handler.postDelayed(this, 500)
+                                }
                             }
                         }
                     }
+                    handler.post(runnable)
                 }
-                handler.post(runnable)
             }
             if (motionEvent.action == MotionEvent.ACTION_UP) {
                 fastForwarding = false
@@ -89,21 +112,23 @@ class MediaPlayerActivity : AppCompatActivity() {
 
         var rewinding: Boolean
         rewindButton.setOnTouchListener { _, motionEvent ->
-            if (motionEvent.action == MotionEvent.ACTION_DOWN) {
-                rewinding = true
-                val handler: Handler = Handler(Looper.getMainLooper())
-                val runnable = object : Runnable {
-                    override fun run() {
-                        if (rewinding) {
-                            mediaPlayer?.seekTo(mediaPlayer!!.currentPosition.minus(2000))
-                            handler.postDelayed(this, 500)
+            if (mediaPlayer != null) {
+                if (motionEvent.action == MotionEvent.ACTION_DOWN) {
+                    rewinding = true
+                    val handler: Handler = Handler(Looper.getMainLooper())
+                    val runnable = object : Runnable {
+                        override fun run() {
+                            if (rewinding) {
+                                mediaPlayer?.seekTo(mediaPlayer!!.currentPosition.minus(2000))
+                                handler.postDelayed(this, 500)
+                            }
                         }
                     }
+                    handler.post(runnable)
                 }
-                handler.post(runnable)
-            }
-            if (motionEvent.action == MotionEvent.ACTION_UP) {
-                rewinding = false
+                if (motionEvent.action == MotionEvent.ACTION_UP) {
+                    rewinding = false
+                }
             }
             true
         }
@@ -144,13 +169,13 @@ class MediaPlayerActivity : AppCompatActivity() {
         super.onDestroy()
     }
 
-    fun pause(){
+    private fun pause(){
         mediaPlayer?.pause()
         playButton.isVisible = true
         pauseButton.isVisible = false
     }
 
-    fun play(){
+    private fun play(){
         mediaPlayer?.start()
         playButton.isVisible = false
         pauseButton.isVisible = true
