@@ -11,24 +11,26 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="100dp"
-        android:background="#00FFFFFF"
+        android:background="#FFFFFFFF"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/seekBar"
-        app:srcCompat="@drawable/ic_baseline_play_circle_filled_24" />
+        app:srcCompat="@drawable/ic_baseline_play_circle_filled_24"
+        app:tint="@color/design_default_color_primary"/>
 
     <ImageButton
         android:id="@+id/pauseButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="100dp"
-        android:background="#00FFFFFF"
+        android:background="#FFFFFFFF"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/seekBar"
-        app:srcCompat="@drawable/ic_baseline_pause_circle_filled_24" />
+        app:srcCompat="@drawable/ic_baseline_pause_circle_filled_24"
+        app:tint="@color/design_default_color_primary"/>
 
     <ImageButton
         android:id="@+id/rewindButton"
@@ -39,7 +41,8 @@
         android:background="#00FFFFFF"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/seekBar"
-        app:srcCompat="@drawable/ic_baseline_fast_rewind_24" />
+        app:srcCompat="@drawable/ic_baseline_fast_rewind_24"
+        app:tint="@color/design_default_color_primary"/>
 
     <ImageButton
         android:id="@+id/fastForwardButton"
@@ -50,7 +53,8 @@
         android:background="#03FFFFFF"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/seekBar"
-        app:srcCompat="@drawable/ic_baseline_fast_forward_24" />
+        app:srcCompat="@drawable/ic_baseline_fast_forward_24"
+        app:tint="@color/design_default_color_primary"/>
 
     <SeekBar
         android:id="@+id/seekBar"
@@ -88,26 +92,26 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageButton
+    <Button
         android:id="@+id/increaseButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
         android:layout_marginTop="20dp"
-        android:background="#00FFFFFF"
+        android:text="Button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/seekBar"
-        app:srcCompat="@drawable/ic_baseline_add_circle_24" />
+        android:background="@drawable/ic_baseline_circle_24"/>
 
-    <ImageButton
+    <Button
         android:id="@+id/decreaseButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="120dp"
-        android:background="#07FFFFFF"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
+        android:layout_marginTop="110dp"
+        android:background="@drawable/ic_baseline_circle_24"
+        android:text="Button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/increaseButton"
-        app:srcCompat="@drawable/ic_baseline_remove_circle_24" />
+        app:layout_constraintTop_toBottomOf="@+id/increaseButton" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

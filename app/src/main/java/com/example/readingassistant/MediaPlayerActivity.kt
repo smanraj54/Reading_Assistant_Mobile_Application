@@ -9,6 +9,7 @@ import android.os.Handler
 import android.os.Looper
 
 import android.view.MotionEvent
+import android.widget.Button
 import android.widget.ImageButton
 import android.widget.SeekBar
 import androidx.core.view.isVisible
@@ -19,25 +20,49 @@ class MediaPlayerActivity : AppCompatActivity() {
     lateinit var playButton: ImageButton
     lateinit var pauseButton: ImageButton
 
-    @SuppressLint("ClickableViewAccessibility")
+    @SuppressLint("ClickableViewAccessibility") //fix this
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        var testAudio = R.raw.lofi_study_music ///change to get file from intent
+        /*
+        val arguments = intent.extras
+        if (arguments != null) {
+            val text = arguments.getString("text")
+            val audio = arguments.getString("audio")
+            val documentTitle = arguments.getString("title")
+        }*/
+
+
         setContentView(R.layout.activity_media_player)
 
         playButton = findViewById(R.id.playButton)
         pauseButton = findViewById(R.id.pauseButton)
         val fastForwardButton: ImageButton = findViewById(R.id.fastForwardButton)
         val rewindButton: ImageButton = findViewById(R.id.rewindButton)
-        val increaseButton: ImageButton = findViewById(R.id.increaseButton)
-        val decreaseButton: ImageButton = findViewById(R.id.decreaseButton)
+        val increaseButton: Button = findViewById(R.id.increaseButton)
+        val decreaseButton: Button = findViewById(R.id.decreaseButton)
         val seekBar: SeekBar = findViewById(R.id.seekBar)
-
-        var testAudio = R.raw.lofi_study_music ///change
-
-
         pauseButton.isVisible = false
 
 
+        var speedControl:SpeedControl = SpeedControl(DoubleArray(7){0.5 +(it*0.25)})
+
+        fun updateSpeedButtons() {
+            if (speedControl.getMaxSpeed() == speedControl.getCurrentSpeed()) {
+                increaseButton.setText("max")
+            } else {
+                increaseButton.setText("x" + speedControl.getHigherSpeed())
+            }
+
+            if (speedControl.getMinSpeed() == speedControl.getCurrentSpeed()) {
+                decreaseButton.setText("min")
+            } else {
+                decreaseButton.setText("x"+speedControl.getLowerSpeed())
+            }
+        }
+
+        //set up play button listener
         playButton.setOnClickListener {
             if (mediaPlayer == null) {
 
@@ -56,33 +81,38 @@ class MediaPlayerActivity : AppCompatActivity() {
             play()
         }
 
+        //set up pause button listener
         pauseButton.setOnClickListener {
             pause()
         }
 
-
+        //set up speed buttons
+        updateSpeedButtons()
         val params: PlaybackParams = PlaybackParams().setSpeed(1F)
 
+        //set up increase speed button listener
         increaseButton.setOnClickListener {
-            println(params.speed)
-            if (params.speed<2) {
-                if (mediaPlayer != null) {
-                    params.speed += 0.25F
-                    mediaPlayer!!.playbackParams = params
-                }
+            if (mediaPlayer != null) {
+                println(DoubleArray(8){0.5 +(it*0.25)})
+                speedControl.increaseSpeed()
+                params.speed = speedControl.getCurrentSpeed().toFloat()
+                mediaPlayer!!.playbackParams = params
+                updateSpeedButtons()
             }
         }
 
+        //set up decrease speed button listener
         decreaseButton.setOnClickListener {
-            println(params.speed)
-            if (params.speed>0.5) {
-                if (mediaPlayer!=null){
-                    params.speed -= 0.25F
-                    mediaPlayer!!.playbackParams = params
-                }
+            if (mediaPlayer!=null){
+                speedControl.decreaseSpeed()
+                params.speed = speedControl.getCurrentSpeed().toFloat()
+                mediaPlayer!!.playbackParams = params
+                updateSpeedButtons()
             }
         }
 
+
+        //setup rewind button listener
         var fastForwarding: Boolean
         fastForwardButton.setOnTouchListener { _, motionEvent ->
             if (mediaPlayer != null) {
@@ -110,6 +140,7 @@ class MediaPlayerActivity : AppCompatActivity() {
             true
         }
 
+        //setup fast forward button listener
         var rewinding: Boolean
         rewindButton.setOnTouchListener { _, motionEvent ->
             if (mediaPlayer != null) {
