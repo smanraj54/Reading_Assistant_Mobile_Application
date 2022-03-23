@@ -1,4 +1,4 @@
-package com.example.readingassistant
+package com.example.readingassistant.fragments
 
 import android.os.Bundle
 import android.speech.tts.TextToSpeech
@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.setFragmentResult
 import androidx.navigation.fragment.findNavController
+import com.example.readingassistant.R
 import com.example.readingassistant.databinding.FragmentTtsBinding
 import java.io.File
 import java.util.*

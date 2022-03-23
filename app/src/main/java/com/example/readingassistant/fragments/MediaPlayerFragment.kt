@@ -1,4 +1,4 @@
-package com.example.readingassistant
+package com.example.readingassistant.fragments
 
 import android.media.MediaPlayer
 import android.media.PlaybackParams
@@ -16,6 +16,8 @@ import android.widget.ImageButton
 import android.widget.SeekBar
 import androidx.core.view.isVisible
 import androidx.fragment.app.setFragmentResultListener
+import com.example.readingassistant.R
+import com.example.readingassistant.model.SpeedControl
 import com.example.readingassistant.databinding.FragmentMediaPlayerBinding
 import java.io.File
 
@@ -56,18 +58,14 @@ class MediaPlayerFragment : Fragment() {
         val increaseButton: Button = view.findViewById(R.id.increaseButton)
         val decreaseButton: Button = view.findViewById(R.id.decreaseButton)
         val seekBar: SeekBar = view.findViewById(R.id.seekBar)
-        val speedControl:SpeedControl = SpeedControl(DoubleArray(7){0.5 +(it*0.25)})
+        val speedControl: SpeedControl = SpeedControl(DoubleArray(7){0.5 +(it*0.25)})
 
         setFragmentResultListener("mediaPlayerDocument") {requestKey, bundle ->
             binding.mediaPlayerDocumentTitle.text = bundle.getString("title")
             binding.mediaPlayerDocumentText.text = bundle.getString("text")
             var audioPath = bundle.getString("audioPath")
-            println("AUDIO AUDIO AUDIO")
-            println(audioPath)
             audio = Uri.fromFile(File(audioPath))
-            println(audio)
             if (audio != null) {
-                println("AUDIO NOT NULL")
                 setupMediaPlayer(audio, seekBar)
                 setupPlayButton(seekBar)
            }
@@ -147,7 +145,7 @@ class MediaPlayerFragment : Fragment() {
         }
     }
 
-    private fun updateSpeedButtons(speedControl:SpeedControl, increaseButton:Button, decreaseButton:Button) {
+    private fun updateSpeedButtons(speedControl: SpeedControl, increaseButton:Button, decreaseButton:Button) {
         if (speedControl.getMaxSpeed() == speedControl.getCurrentSpeed()) {
             increaseButton.setText("max")
         } else {

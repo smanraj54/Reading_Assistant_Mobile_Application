@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/TTSFragment"
-        android:name="com.example.readingassistant.TTSFragment"
+        android:name="com.example.readingassistant.fragments.TTSFragment"
         android:label="@string/tts_fragment_label"
         tools:layout="@layout/fragment_tts">
 
@@ -18,7 +18,7 @@
 
     <fragment
         android:id="@+id/MediaPlayerFragment"
-        android:name="com.example.readingassistant.MediaPlayerFragment"
+        android:name="com.example.readingassistant.fragments.MediaPlayerFragment"
         android:label="@string/media_player_fragment_label"
         tools:layout="@layout/fragment_media_player">
 

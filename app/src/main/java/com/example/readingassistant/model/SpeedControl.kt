@@ -1,4 +1,4 @@
-package com.example.readingassistant
+package com.example.readingassistant.model
 
 class SpeedControl(speeds:DoubleArray) {
     private var speeds:DoubleArray = speeds
