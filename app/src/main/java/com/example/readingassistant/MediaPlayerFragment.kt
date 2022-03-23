@@ -2,62 +2,58 @@ package com.example.readingassistant
 
 import android.media.MediaPlayer
 import android.media.PlaybackParams
-import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-
+import androidx.fragment.app.Fragment
+import android.view.LayoutInflater
 import android.view.MotionEvent
-import android.widget.*
+import android.view.View
+import android.view.ViewGroup
+import android.widget.Button
+import android.widget.ImageButton
+import android.widget.SeekBar
 import androidx.core.view.isVisible
-import java.io.File
+import com.example.readingassistant.databinding.FragmentMediaPlayerBinding
 
-class MediaPlayerActivity : AppCompatActivity() {
+class MediaPlayerFragment : Fragment() {
+
+    private var _binding: FragmentMediaPlayerBinding? = null
+
+    // This property is only valid between onCreateView and
+    // onDestroyView.
+    private val binding get() = _binding!!
 
     var mediaPlayer: MediaPlayer? = null
     lateinit var playButton: ImageButton
     lateinit var pauseButton: ImageButton
+    val seekBarHandler: Handler = Handler(Looper.getMainLooper())
+    lateinit var updateSeekBar: Runnable
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_media_player)
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
 
-        val testAudio: Int = R.raw.lofi_study_music
+        _binding = FragmentMediaPlayerBinding.inflate(inflater, container, false)
+        return binding.root
 
-        var audio:Int? = null
-        val arguments = intent.extras
-        if (arguments != null) {
+    }
 
-            val text = arguments.getString("text")
-            if (text.isNullOrBlank()) {
-                findViewById<TextView>(R.id.mediaPlayerDocumentText).text = getText(R.string.no_text)
-            } else {
-                findViewById<TextView>(R.id.mediaPlayerDocumentText).text = text
-            }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-            val documentTitle = arguments.getString("title")
-            if (documentTitle.isNullOrBlank()) {
-                findViewById<TextView>(R.id.mediaPlayerDocumentTitle).text = getText(R.string.no_title)
-            } else {
-                findViewById<TextView>(R.id.mediaPlayerDocumentTitle).text = documentTitle
-            }
+        val audio: Int = R.raw.lofi_study_music
 
-            audio = arguments.getInt("audioFilePath")
-        //    println(File(arguments.getString("audioFilePath")).isFile)
-          //  audio = Uri.fromFile(File(arguments.getString("audioFilePath")))
-        println(audio)
-        }
-
-        playButton = findViewById(R.id.playButton)
-        pauseButton = findViewById(R.id.pauseButton)
+        playButton = view.findViewById(R.id.playButton)
+        pauseButton = view.findViewById(R.id.pauseButton)
         pauseButton.isVisible = false
 
-        val fastForwardButton: ImageButton = findViewById(R.id.fastForwardButton)
-        val rewindButton: ImageButton = findViewById(R.id.rewindButton)
-        val increaseButton: Button = findViewById(R.id.increaseButton)
-        val decreaseButton: Button = findViewById(R.id.decreaseButton)
-        val seekBar: SeekBar = findViewById(R.id.seekBar)
+        val fastForwardButton: ImageButton = view.findViewById(R.id.fastForwardButton)
+        val rewindButton: ImageButton = view.findViewById(R.id.rewindButton)
+        val increaseButton: Button = view.findViewById(R.id.increaseButton)
+        val decreaseButton: Button = view.findViewById(R.id.decreaseButton)
+        val seekBar: SeekBar = view.findViewById(R.id.seekBar)
         val speedControl:SpeedControl = SpeedControl(DoubleArray(7){0.5 +(it*0.25)})
 
         if (audio != null) {
@@ -70,22 +66,36 @@ class MediaPlayerActivity : AppCompatActivity() {
         setupSeekBar(seekBar)
     }
 
+    override fun onDestroyView() {
+        println("view destroyed")
+        seekBarHandler.removeCallbacks(updateSeekBar)
+        mediaPlayer?.stop()
+        mediaPlayer?.reset()
+        mediaPlayer?.release()
+        super.onDestroyView()
+        _binding = null
+    }
+
+    override fun onPause() {
+        pause()
+        super.onPause()
+    }
+
     private fun setupPlayButton(audio: Int, seekBar: SeekBar) {
         //set up play button listener
         playButton.setOnClickListener {
             if (mediaPlayer == null) {
 
-                mediaPlayer = MediaPlayer.create(this, audio)
+                mediaPlayer = MediaPlayer.create(activity?.applicationContext, audio)
                 seekBar.max = mediaPlayer!!.duration
 
-                val handler: Handler = Handler(Looper.getMainLooper())
-                val runnable = object : Runnable {
+                updateSeekBar = object : Runnable {
                     override fun run() {
                         seekBar.progress = mediaPlayer!!.currentPosition
-                        handler.postDelayed(this, 1000)
+                        seekBarHandler.postDelayed(this, 1000)
                     }
                 }
-                handler.post(runnable)
+                seekBarHandler.post(updateSeekBar)
             }
             play()
         }
@@ -216,17 +226,6 @@ class MediaPlayerActivity : AppCompatActivity() {
             }
 
         })
-    }
-
-    override fun onPause() {
-        pause()
-        super.onPause()
-    }
-
-    override fun onDestroy() {
-        mediaPlayer?.stop()
-        mediaPlayer?.release()
-        super.onDestroy()
     }
 
     private fun pause(){
