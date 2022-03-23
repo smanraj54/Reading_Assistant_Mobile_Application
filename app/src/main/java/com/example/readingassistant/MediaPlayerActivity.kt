@@ -2,16 +2,16 @@ package com.example.readingassistant
 
 import android.media.MediaPlayer
 import android.media.PlaybackParams
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 
 import android.view.MotionEvent
-import android.widget.Button
-import android.widget.ImageButton
-import android.widget.SeekBar
+import android.widget.*
 import androidx.core.view.isVisible
+import java.io.File
 
 class MediaPlayerActivity : AppCompatActivity() {
 
@@ -23,14 +23,37 @@ class MediaPlayerActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_media_player)
 
-        val testAudio: Int = R.raw.lofi_study_music ///change to get file from intent
-        /*
+        val testAudio: Int = R.raw.lofi_study_music
+
+        var audio:Int? = null
         val arguments = intent.extras
         if (arguments != null) {
+
             val text = arguments.getString("text")
-            val audio = arguments.getString("audio")
+            if (text.isNullOrBlank()) {
+                findViewById<TextView>(R.id.mediaPlayerDocumentText).text = getText(R.string.no_text)
+            } else {
+                findViewById<TextView>(R.id.mediaPlayerDocumentText).text = text
+            }
+
             val documentTitle = arguments.getString("title")
-        }*/
+            if (documentTitle.isNullOrBlank()) {
+                findViewById<TextView>(R.id.mediaPlayerDocumentTitle).text = getText(R.string.no_title)
+            } else {
+                findViewById<TextView>(R.id.mediaPlayerDocumentTitle).text = documentTitle
+            }
+
+            audio = arguments.getInt("audioFilePath")
+        //    println(File(arguments.getString("audioFilePath")).isFile)
+          //  audio = Uri.fromFile(File(arguments.getString("audioFilePath")))
+        println(audio)
+        }
+//clean up
+        //warnings
+        //topbar
+        //make sure file works
+        //release tts
+
 
         playButton = findViewById(R.id.playButton)
         pauseButton = findViewById(R.id.pauseButton)
@@ -43,7 +66,9 @@ class MediaPlayerActivity : AppCompatActivity() {
         val seekBar: SeekBar = findViewById(R.id.seekBar)
         val speedControl:SpeedControl = SpeedControl(DoubleArray(7){0.5 +(it*0.25)})
 
-        setupPlayButton(testAudio, seekBar)
+        if (audio != null) {
+            setupPlayButton(audio, seekBar)
+        }
         setupPauseButton()
         setupSpeedButtons(speedControl, increaseButton, decreaseButton)
         setupFastForward(fastForwardButton)
@@ -51,12 +76,12 @@ class MediaPlayerActivity : AppCompatActivity() {
         setupSeekBar(seekBar)
     }
 
-    private fun setupPlayButton(testAudio: Int, seekBar: SeekBar) {
+    private fun setupPlayButton(audio: Int, seekBar: SeekBar) {
         //set up play button listener
         playButton.setOnClickListener {
             if (mediaPlayer == null) {
 
-                mediaPlayer = MediaPlayer.create(this, testAudio) //change to accept file
+                mediaPlayer = MediaPlayer.create(this, audio)
                 seekBar.max = mediaPlayer!!.duration
 
                 val handler: Handler = Handler(Looper.getMainLooper())
@@ -103,7 +128,6 @@ class MediaPlayerActivity : AppCompatActivity() {
             }
         }
     }
-
 
     private fun updateSpeedButtons(speedControl:SpeedControl, increaseButton:Button, decreaseButton:Button) {
         if (speedControl.getMaxSpeed() == speedControl.getCurrentSpeed()) {

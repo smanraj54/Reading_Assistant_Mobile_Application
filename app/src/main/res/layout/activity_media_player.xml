@@ -65,10 +65,10 @@
         android:layout_marginEnd="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/media_player_document_text" />
+        app:layout_constraintTop_toBottomOf="@+id/mediaPlayerDocumentText" />
 
     <TextView
-        android:id="@+id/media_player_document_text"
+        android:id="@+id/mediaPlayerDocumentText"
         android:layout_width="0dp"
         android:layout_height="130dp"
         android:layout_marginStart="20dp"
@@ -78,10 +78,10 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/media_player_document_title" />
+        app:layout_constraintTop_toBottomOf="@+id/mediaPlayerDocumentTitle" />
 
     <TextView
-        android:id="@+id/media_player_document_title"
+        android:id="@+id/mediaPlayerDocumentTitle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="50dp"

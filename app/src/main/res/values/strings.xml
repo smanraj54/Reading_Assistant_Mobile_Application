@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">Reading Assistant</string>
     <string name="media_player">Read Aloud</string>
-<!-- TODO: Remove or change this placeholder text -->
+    <string name="no_title">No title</string>
+    <string name="no_text">No text available</string>
+    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
