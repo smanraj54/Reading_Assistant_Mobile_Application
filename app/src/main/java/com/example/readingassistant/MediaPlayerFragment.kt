@@ -24,11 +24,11 @@ class MediaPlayerFragment : Fragment() {
     // onDestroyView.
     private val binding get() = _binding!!
 
-    var mediaPlayer: MediaPlayer? = null
-    lateinit var playButton: ImageButton
-    lateinit var pauseButton: ImageButton
-    val seekBarHandler: Handler = Handler(Looper.getMainLooper())
-    lateinit var updateSeekBar: Runnable
+    private lateinit var mediaPlayer: MediaPlayer
+    private lateinit var playButton: ImageButton
+    private lateinit var pauseButton: ImageButton
+    private val seekBarHandler: Handler = Handler(Looper.getMainLooper())
+    private lateinit var updateSeekBar: Runnable
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -57,6 +57,7 @@ class MediaPlayerFragment : Fragment() {
         val speedControl:SpeedControl = SpeedControl(DoubleArray(7){0.5 +(it*0.25)})
 
         if (audio != null) {
+            setupMediaPlayer(audio, seekBar)
             setupPlayButton(audio, seekBar)
         }
         setupPauseButton()
@@ -66,12 +67,25 @@ class MediaPlayerFragment : Fragment() {
         setupSeekBar(seekBar)
     }
 
+    private fun setupMediaPlayer(audio: Int, seekBar: SeekBar) {
+        mediaPlayer = MediaPlayer.create(activity?.applicationContext, audio)
+        seekBar.max = mediaPlayer.duration
+
+        updateSeekBar = object : Runnable {
+            override fun run() {
+                seekBar.progress = mediaPlayer.currentPosition
+                seekBarHandler.postDelayed(this, 1000)
+            }
+        }
+        seekBarHandler.post(updateSeekBar)
+    }
+
     override fun onDestroyView() {
         println("view destroyed")
         seekBarHandler.removeCallbacks(updateSeekBar)
-        mediaPlayer?.stop()
-        mediaPlayer?.reset()
-        mediaPlayer?.release()
+        mediaPlayer.stop()
+        mediaPlayer.reset()
+        mediaPlayer.release()
         super.onDestroyView()
         _binding = null
     }
@@ -84,19 +98,6 @@ class MediaPlayerFragment : Fragment() {
     private fun setupPlayButton(audio: Int, seekBar: SeekBar) {
         //set up play button listener
         playButton.setOnClickListener {
-            if (mediaPlayer == null) {
-
-                mediaPlayer = MediaPlayer.create(activity?.applicationContext, audio)
-                seekBar.max = mediaPlayer!!.duration
-
-                updateSeekBar = object : Runnable {
-                    override fun run() {
-                        seekBar.progress = mediaPlayer!!.currentPosition
-                        seekBarHandler.postDelayed(this, 1000)
-                    }
-                }
-                seekBarHandler.post(updateSeekBar)
-            }
             play()
         }
     }
@@ -113,21 +114,21 @@ class MediaPlayerFragment : Fragment() {
 
         //set up increase speed button listener
         increaseButton.setOnClickListener {
-            if (mediaPlayer != null) {
+            if (mediaPlayer.isPlaying) {
                 println(DoubleArray(8) { 0.5 + (it * 0.25) })
                 speedControl.increaseSpeed()
                 params.speed = speedControl.getCurrentSpeed().toFloat()
-                mediaPlayer!!.playbackParams = params
+                mediaPlayer.playbackParams = params
                 updateSpeedButtons(speedControl, increaseButton, decreaseButton)
             }
         }
 
         //set up decrease speed button listener
         decreaseButton.setOnClickListener {
-            if (mediaPlayer != null) {
+            if (mediaPlayer.isPlaying) {
                 speedControl.decreaseSpeed()
                 params.speed = speedControl.getCurrentSpeed().toFloat()
-                mediaPlayer!!.playbackParams = params
+                mediaPlayer.playbackParams = params
                 updateSpeedButtons(speedControl, increaseButton, decreaseButton)
             }
         }
@@ -151,24 +152,22 @@ class MediaPlayerFragment : Fragment() {
         //setup fast forward button listener
         var fastForwarding: Boolean
         fastForwardButton.setOnTouchListener { _, motionEvent ->
-            if (mediaPlayer != null) {
-                if (motionEvent.action == MotionEvent.ACTION_DOWN) {
-                    fastForwarding = true
-                    val handler: Handler = Handler(Looper.getMainLooper())
-                    val runnable = object : Runnable {
-                        override fun run() {
-                            if (fastForwarding) {
-                                if (mediaPlayer!!.currentPosition + 2000 >= mediaPlayer!!.duration) {
-                                    mediaPlayer!!.seekTo(mediaPlayer!!.duration)
-                                } else {
-                                    mediaPlayer!!.seekTo(mediaPlayer!!.currentPosition.plus(2000))
-                                    handler.postDelayed(this, 500)
-                                }
+            if (motionEvent.action == MotionEvent.ACTION_DOWN) {
+                fastForwarding = true
+                val handler: Handler = Handler(Looper.getMainLooper())
+                val runnable = object : Runnable {
+                    override fun run() {
+                        if (fastForwarding) {
+                            if (mediaPlayer!!.currentPosition + 2000 >= mediaPlayer!!.duration) {
+                                mediaPlayer!!.seekTo(mediaPlayer!!.duration)
+                            } else {
+                                mediaPlayer!!.seekTo(mediaPlayer!!.currentPosition.plus(2000))
+                                handler.postDelayed(this, 500)
                             }
                         }
                     }
-                    handler.post(runnable)
                 }
+                handler.post(runnable)
             }
             if (motionEvent.action == MotionEvent.ACTION_UP) {
                 fastForwarding = false
@@ -181,23 +180,21 @@ class MediaPlayerFragment : Fragment() {
         //setup rewind button listener
         var rewinding: Boolean
         rewindButton.setOnTouchListener { _, motionEvent ->
-            if (mediaPlayer != null) {
-                if (motionEvent.action == MotionEvent.ACTION_DOWN) {
-                    rewinding = true
-                    val handler: Handler = Handler(Looper.getMainLooper())
-                    val runnable = object : Runnable {
-                        override fun run() {
-                            if (rewinding) {
-                                mediaPlayer?.seekTo(mediaPlayer!!.currentPosition.minus(2000))
-                                handler.postDelayed(this, 500)
-                            }
+            if (motionEvent.action == MotionEvent.ACTION_DOWN) {
+                rewinding = true
+                val handler: Handler = Handler(Looper.getMainLooper())
+                val runnable = object : Runnable {
+                    override fun run() {
+                        if (rewinding) {
+                            mediaPlayer?.seekTo(mediaPlayer!!.currentPosition.minus(2000))
+                            handler.postDelayed(this, 500)
                         }
                     }
-                    handler.post(runnable)
                 }
-                if (motionEvent.action == MotionEvent.ACTION_UP) {
-                    rewinding = false
-                }
+                handler.post(runnable)
+            }
+            if (motionEvent.action == MotionEvent.ACTION_UP) {
+                rewinding = false
             }
             true
         }
@@ -207,7 +204,7 @@ class MediaPlayerFragment : Fragment() {
         seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(p0: SeekBar?, p1: Int, p2: Boolean) {
                 if (p2) {
-                    mediaPlayer?.seekTo(p1)
+                    mediaPlayer.seekTo(p1)
                 }
 
                 if (p1 == seekBar.max) {
@@ -229,13 +226,13 @@ class MediaPlayerFragment : Fragment() {
     }
 
     private fun pause(){
-        mediaPlayer?.pause()
+        mediaPlayer.pause()
         playButton.isVisible = true
         pauseButton.isVisible = false
     }
 
     private fun play(){
-        mediaPlayer?.start()
+        mediaPlayer.start()
         playButton.isVisible = false
         pauseButton.isVisible = true
     }
