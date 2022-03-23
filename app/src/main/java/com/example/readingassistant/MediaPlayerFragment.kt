@@ -2,6 +2,7 @@ package com.example.readingassistant
 
 import android.media.MediaPlayer
 import android.media.PlaybackParams
+import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -14,7 +15,9 @@ import android.widget.Button
 import android.widget.ImageButton
 import android.widget.SeekBar
 import androidx.core.view.isVisible
+import androidx.fragment.app.setFragmentResultListener
 import com.example.readingassistant.databinding.FragmentMediaPlayerBinding
+import java.io.File
 
 class MediaPlayerFragment : Fragment() {
 
@@ -43,8 +46,7 @@ class MediaPlayerFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val audio: Int = R.raw.lofi_study_music
-
+        var audio:Uri
         playButton = view.findViewById(R.id.playButton)
         pauseButton = view.findViewById(R.id.pauseButton)
         pauseButton.isVisible = false
@@ -56,10 +58,21 @@ class MediaPlayerFragment : Fragment() {
         val seekBar: SeekBar = view.findViewById(R.id.seekBar)
         val speedControl:SpeedControl = SpeedControl(DoubleArray(7){0.5 +(it*0.25)})
 
-        if (audio != null) {
-            setupMediaPlayer(audio, seekBar)
-            setupPlayButton(audio, seekBar)
+        setFragmentResultListener("mediaPlayerDocument") {requestKey, bundle ->
+            binding.mediaPlayerDocumentTitle.text = bundle.getString("title")
+            binding.mediaPlayerDocumentText.text = bundle.getString("text")
+            var audioPath = bundle.getString("audioPath")
+            println("AUDIO AUDIO AUDIO")
+            println(audioPath)
+            audio = Uri.fromFile(File(audioPath))
+            println(audio)
+            if (audio != null) {
+                println("AUDIO NOT NULL")
+                setupMediaPlayer(audio, seekBar)
+                setupPlayButton(seekBar)
+           }
         }
+
         setupPauseButton()
         setupSpeedButtons(speedControl, increaseButton, decreaseButton)
         setupFastForward(fastForwardButton)
@@ -67,7 +80,7 @@ class MediaPlayerFragment : Fragment() {
         setupSeekBar(seekBar)
     }
 
-    private fun setupMediaPlayer(audio: Int, seekBar: SeekBar) {
+    private fun setupMediaPlayer(audio: Uri, seekBar: SeekBar) {
         mediaPlayer = MediaPlayer.create(activity?.applicationContext, audio)
         seekBar.max = mediaPlayer.duration
 
@@ -95,7 +108,7 @@ class MediaPlayerFragment : Fragment() {
         super.onPause()
     }
 
-    private fun setupPlayButton(audio: Int, seekBar: SeekBar) {
+    private fun setupPlayButton(seekBar: SeekBar) {
         //set up play button listener
         playButton.setOnClickListener {
             play()

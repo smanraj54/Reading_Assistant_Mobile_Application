@@ -15,6 +15,7 @@
             android:id="@+id/action_TTSFragment_to_MediaPlayerFragment"
             app:destination="@id/MediaPlayerFragment" />
     </fragment>
+
     <fragment
         android:id="@+id/MediaPlayerFragment"
         android:name="com.example.readingassistant.MediaPlayerFragment"

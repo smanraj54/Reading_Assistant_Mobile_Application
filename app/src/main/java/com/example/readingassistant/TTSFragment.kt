@@ -2,18 +2,17 @@ package com.example.readingassistant
 
 import android.os.Bundle
 import android.speech.tts.TextToSpeech
+import android.speech.tts.UtteranceProgressListener
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
+import androidx.fragment.app.setFragmentResult
 import androidx.navigation.fragment.findNavController
 import com.example.readingassistant.databinding.FragmentTtsBinding
+import java.io.File
 import java.util.*
 
-/**
- * A simple [Fragment] subclass as the default destination in the navigation.
- */
 class TTSFragment : Fragment() {
 
     private var _binding: FragmentTtsBinding? = null
@@ -34,6 +33,17 @@ class TTSFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+
+        //for testing purposes, to be removed
+        var title = "title"
+        var text = ""
+        for (i in 0..50) {
+            text += "sample text "
+        }
+        binding.textBox.setText(text)
+        binding.titleBox.setText(title)
+        //end testing section
+
         tts = TextToSpeech(activity, object: TextToSpeech.OnInitListener{
             override fun onInit(p0: Int) {
                 if (p0 == TextToSpeech.SUCCESS) {
@@ -43,13 +53,30 @@ class TTSFragment : Fragment() {
         })
 
         binding.speakButton.setOnClickListener {
-            val textBox: EditText = binding.textBox
-            val titlebox: EditText = binding.titleBox
-            val text = textBox.text.toString()
-            val title = titlebox.text.toString()
 
-            tts.speak(text, TextToSpeech.QUEUE_FLUSH, null, "")
-            findNavController().navigate(R.id.action_TTSFragment_to_MediaPlayerFragment)
+            val path = activity?.filesDir?.absolutePath+"/audio.mp3"
+
+            tts.setOnUtteranceProgressListener(object : UtteranceProgressListener() {
+                override fun onStart(utteranceId: String) {
+                }
+
+                override fun onDone(utteranceId: String) {
+
+                    val bundle = Bundle()
+                    bundle.putString("text",text)
+                    bundle.putString("title",title)
+                    bundle.putString("audioPath",path)
+
+                    setFragmentResult("mediaPlayerDocument",bundle)
+                    findNavController().navigate(R.id.action_TTSFragment_to_MediaPlayerFragment)
+                }
+
+                override fun onError(utteranceId: String) {
+                    //TODO:Handle error
+                }
+            })
+
+            tts.synthesizeToFile(text,null, File(path),"audio.mp3")
         }
     }
 

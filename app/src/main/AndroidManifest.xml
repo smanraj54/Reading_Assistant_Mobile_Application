@@ -14,16 +14,7 @@
             android:label="@string/title_activity_example"
             android:theme="@style/Theme.ReadingAssistant.NoActionBar"
             android:exported="true" />
-        <activity
-            android:name=".TTSExampleActivity"
-            android:exported="true" />
-        <activity
-            android:name=".MediaPlayerActivity"
-            android:exported="true">
-            <intent-filter>
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+
         <activity
             android:name=".MainActivity"
             android:exported="true">
