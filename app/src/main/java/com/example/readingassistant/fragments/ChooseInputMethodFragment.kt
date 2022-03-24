@@ -72,7 +72,6 @@ class ChooseInputMethodFragment : Fragment() {
             result: ActivityResult ->
         if (result.resultCode == Activity.RESULT_OK) {
             val intent = result.data
-            print("")
             // Handle the Intent
             //do stuff here
         }

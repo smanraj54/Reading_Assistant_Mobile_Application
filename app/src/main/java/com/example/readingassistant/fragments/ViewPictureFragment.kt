@@ -1,23 +1,23 @@
 package com.example.readingassistant.fragments
 
+import android.R.attr.bitmap
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Matrix
+import android.media.ExifInterface
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResultListener
 import com.example.readingassistant.R
-import android.net.Uri;
-import android.widget.Button
-import com.google.android.gms.tasks.Task
 import com.google.mlkit.vision.common.InputImage
-import com.google.mlkit.vision.text.Text
 import com.google.mlkit.vision.text.TextRecognition
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions
-import java.io.File
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -57,11 +57,37 @@ class ViewPictureFragment : Fragment() {
         var inputImage: InputImage? = null
         setFragmentResultListener("photoURIBundle") {requestKey, bundle ->
             val photoURI = bundle.getString("photoURI")
-            val inputImageStream = context?.getContentResolver()?.openInputStream(Uri.parse(photoURI))
-            val bitmap = BitmapFactory.decodeStream(inputImageStream)
-            inputImage = InputImage.fromBitmap(bitmap, 0)
-            val imageView: ImageView = view.findViewById(R.id.imageView) as ImageView
-            imageView.setImageBitmap(bitmap)
+            var bitmap: Bitmap?
+            val ei: ExifInterface?
+            if (bundle.getString("case") == "gallery") {
+                val inputImageStream = context?.getContentResolver()?.openInputStream(Uri.parse(photoURI))
+                ei = inputImageStream?.let { ExifInterface(it) }
+                bitmap = BitmapFactory.decodeStream(inputImageStream)
+            } else { // if (bundle.getString("case") == "camera") {
+                bitmap = BitmapFactory.decodeFile(photoURI)
+                ei = photoURI?.let { ExifInterface(it) }
+            }
+
+            if (ei == null) { // TODO: handle exception
+
+            } else {
+                val orientation: Int = ei.getAttributeInt(
+                    ExifInterface.TAG_ORIENTATION,
+                    ExifInterface.ORIENTATION_UNDEFINED
+                )
+
+                var rotatedBitmap: Bitmap? = null
+                when (orientation) {
+                    ExifInterface.ORIENTATION_ROTATE_90 -> rotatedBitmap = rotateImage(bitmap, 90F)
+                    ExifInterface.ORIENTATION_ROTATE_180 -> rotatedBitmap = rotateImage(bitmap, 180F)
+                    ExifInterface.ORIENTATION_ROTATE_270 -> rotatedBitmap = rotateImage(bitmap, 270F)
+                    ExifInterface.ORIENTATION_NORMAL -> rotatedBitmap = bitmap
+                    else -> rotatedBitmap = bitmap
+                }
+                inputImage = rotatedBitmap?.let { InputImage.fromBitmap(it, 0) }
+                val imageView: ImageView = view.findViewById(R.id.imageView) as ImageView
+                imageView.setImageBitmap(rotatedBitmap)
+            }
         }
 
         val readFromImageButton = view.findViewById<Button>(R.id.readFromImageButton)
@@ -78,8 +104,25 @@ class ViewPictureFragment : Fragment() {
     private fun performOCR(inputImage: InputImage) {
         val recognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS)
         val result = recognizer.process(inputImage)
+            .addOnSuccessListener { visionText ->
+            // Task completed successfully
+            print("Image to Text completed")
+            }
+            .addOnFailureListener { e ->
+                // Task failed with an exception
+                // ...
+            }
         print(result.result.text)
     }
+
+    fun rotateImage(source: Bitmap, angle: Float): Bitmap? {
+        val matrix = Matrix()
+        matrix.postRotate(angle)
+        return Bitmap.createBitmap(
+            source, 0, 0, source.width, source.height,
+            matrix, true
+        )
+    } // https://stackoverflow.com/a/14066265
 
     companion object {
         /**

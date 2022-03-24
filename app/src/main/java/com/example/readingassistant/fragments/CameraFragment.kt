@@ -1,24 +1,28 @@
 package com.example.readingassistant.fragments
 
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.Matrix
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.camera.core.CameraSelector
-import androidx.camera.core.Preview
+import android.widget.Button
+import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
-import androidx.camera.view.CameraController
 import androidx.camera.view.PreviewView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.setFragmentResult
 import androidx.lifecycle.LifecycleOwner
+import androidx.navigation.fragment.findNavController
 import com.example.readingassistant.Constants.REQUEST_CODE_PERMISSIONS
 import com.example.readingassistant.Constants.REQUIRED_PERMISSIONS
 import com.example.readingassistant.R
-
 import com.google.common.util.concurrent.ListenableFuture
+import java.io.File
+
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -54,6 +58,7 @@ class CameraFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        var imageCapture: ImageCapture? = null
         if (allPermissionsGranted()) {
             lateinit var cameraProviderFuture : ListenableFuture<ProcessCameraProvider>
             cameraProviderFuture = this.activity?.let { ProcessCameraProvider.getInstance(it) } as ListenableFuture<ProcessCameraProvider>
@@ -64,18 +69,53 @@ class CameraFragment : Fragment() {
                 var preview : Preview = Preview.Builder()
                     .build()
 
+                // define camera usecases
+
                 var cameraSelector : CameraSelector = CameraSelector.Builder()
                     .requireLensFacing(CameraSelector.LENS_FACING_BACK)
                     .build()
 
                 preview.setSurfaceProvider(previewView.surfaceProvider)
 
-                var camera = cameraProvider.bindToLifecycle(this as LifecycleOwner, cameraSelector, preview)
+                imageCapture = ImageCapture.Builder()
+                    .setTargetRotation(view.display.rotation)
+                    .build()
+
+                // get camera instance
+                var camera = cameraProvider.bindToLifecycle(this as LifecycleOwner, cameraSelector, preview, imageCapture)
+
             }, ContextCompat.getMainExecutor(this.requireActivity()))
         } else {
             print("Permissions Error")
             this.activity?.let { ActivityCompat.requestPermissions(it, REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS) }
+            // TODO: loop back to the permissions. if the permission isnt already given, then the camera wont open right after it. I THINK. Figure it out.
         }
+
+        // Image Capturing
+        val clickPictureButton = view.findViewById<Button>(R.id.clickPictureButton)
+        val outputDir = requireContext().cacheDir
+        val outputFile: File = File.createTempFile("tempImageFile", ".jpg", outputDir)
+        clickPictureButton.setOnClickListener(View.OnClickListener {
+            val outputOptions = ImageCapture.OutputFileOptions
+                .Builder(outputFile)
+                .build()
+            val thisActivity = this.activity?.let { it1 -> ContextCompat.getMainExecutor(it1) }
+            imageCapture?.takePicture(outputOptions,
+                thisActivity!!,
+                object : ImageCapture.OnImageSavedCallback {
+                    override fun onError(error: ImageCaptureException) {
+                        // TODO: error handling
+                    }
+
+                    override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
+                        val bundle = Bundle()
+                        bundle.putString("photoURI", outputFile.absolutePath)
+                        bundle.putString("case", "camera")
+                        setFragmentResult("photoURIBundle", bundle)
+                        findNavController().navigate(R.id.viewPictureFragment)
+                    }
+                })
+        })
     }
 
     private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
