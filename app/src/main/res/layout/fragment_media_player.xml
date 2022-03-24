@@ -32,7 +32,7 @@
         app:srcCompat="@drawable/ic_baseline_pause_circle_filled_24"
         app:tint="@color/design_default_color_primary"/>
 
-    <ImageButton
+    <com.example.readingassistant.model.HoldButton
         android:id="@+id/rewindButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -44,7 +44,7 @@
         app:srcCompat="@drawable/ic_baseline_fast_rewind_24"
         app:tint="@color/design_default_color_primary"/>
 
-    <ImageButton
+    <com.example.readingassistant.model.HoldButton
         android:id="@+id/fastForwardButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -84,9 +84,8 @@
         android:id="@+id/mediaPlayerDocumentTitle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="50dp"
+        android:layout_marginStart="20dp"
         android:layout_marginTop="50dp"
-        android:layout_marginEnd="50dp"
         android:text="Document title"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
