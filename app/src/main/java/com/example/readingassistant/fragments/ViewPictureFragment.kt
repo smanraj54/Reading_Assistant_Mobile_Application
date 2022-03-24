@@ -58,19 +58,16 @@ class ViewPictureFragment : Fragment() {
         setFragmentResultListener("photoURIBundle") {requestKey, bundle ->
             val photoURI = bundle.getString("photoURI")
             var bitmap: Bitmap?
-            val ei: ExifInterface?
+
             if (bundle.getString("case") == "gallery") {
                 val inputImageStream = context?.getContentResolver()?.openInputStream(Uri.parse(photoURI))
-                ei = inputImageStream?.let { ExifInterface(it) }
                 bitmap = BitmapFactory.decodeStream(inputImageStream)
+                inputImage = InputImage.fromBitmap(bitmap, 0)
+                val imageView: ImageView = view.findViewById(R.id.imageView) as ImageView
+                imageView.setImageBitmap(bitmap)
             } else { // if (bundle.getString("case") == "camera") {
                 bitmap = BitmapFactory.decodeFile(photoURI)
-                ei = photoURI?.let { ExifInterface(it) }
-            }
-
-            if (ei == null) { // TODO: handle exception
-
-            } else {
+                val ei = ExifInterface(photoURI.toString())
                 val orientation: Int = ei.getAttributeInt(
                     ExifInterface.TAG_ORIENTATION,
                     ExifInterface.ORIENTATION_UNDEFINED
@@ -84,10 +81,12 @@ class ViewPictureFragment : Fragment() {
                     ExifInterface.ORIENTATION_NORMAL -> rotatedBitmap = bitmap
                     else -> rotatedBitmap = bitmap
                 }
+
                 inputImage = rotatedBitmap?.let { InputImage.fromBitmap(it, 0) }
                 val imageView: ImageView = view.findViewById(R.id.imageView) as ImageView
                 imageView.setImageBitmap(rotatedBitmap)
             }
+
         }
 
         val readFromImageButton = view.findViewById<Button>(R.id.readFromImageButton)
