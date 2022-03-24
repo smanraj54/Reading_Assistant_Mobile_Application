@@ -1,5 +1,6 @@
 package com.example.readingassistant.fragments
 
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -11,6 +12,11 @@ import androidx.fragment.app.setFragmentResultListener
 import com.example.readingassistant.R
 import android.net.Uri;
 import android.widget.Button
+import com.google.android.gms.tasks.Task
+import com.google.mlkit.vision.common.InputImage
+import com.google.mlkit.vision.text.Text
+import com.google.mlkit.vision.text.TextRecognition
+import com.google.mlkit.vision.text.latin.TextRecognizerOptions
 import java.io.File
 
 
@@ -48,10 +54,12 @@ class ViewPictureFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        var inputImage: InputImage? = null
         setFragmentResultListener("photoURIBundle") {requestKey, bundle ->
             val photoURI = bundle.getString("photoURI")
             val inputImageStream = context?.getContentResolver()?.openInputStream(Uri.parse(photoURI))
             val bitmap = BitmapFactory.decodeStream(inputImageStream)
+            inputImage = InputImage.fromBitmap(bitmap, 0)
             val imageView: ImageView = view.findViewById(R.id.imageView) as ImageView
             imageView.setImageBitmap(bitmap)
         }
@@ -59,7 +67,18 @@ class ViewPictureFragment : Fragment() {
         val readFromImageButton = view.findViewById<Button>(R.id.readFromImageButton)
         readFromImageButton.setOnClickListener(View.OnClickListener {
             // translate api
+            if (inputImage == null) {
+                // handle error
+            } else {
+                performOCR(inputImage!!)
+            }
         })
+    }
+
+    private fun performOCR(inputImage: InputImage) {
+        val recognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS)
+        val result = recognizer.process(inputImage)
+        print(result.result.text)
     }
 
     companion object {
