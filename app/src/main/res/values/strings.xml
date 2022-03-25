@@ -10,5 +10,4 @@
     <string name="min_label">min</string>
     <string name="max_label">max</string>
     <string name="speed_label">x%.2f</string>
-
 </resources>
