@@ -7,6 +7,9 @@ import android.graphics.Matrix
 import android.media.ExifInterface
 import android.net.Uri
 import android.os.Bundle
+import android.speech.tts.TextToSpeech
+import android.speech.tts.UtteranceProgressListener
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,6 +23,8 @@ import com.example.readingassistant.R
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.TextRecognition
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions
+import java.io.File
+import java.util.*
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -97,6 +102,7 @@ class ViewPictureFragment : Fragment() {
             if (inputImage == null) {
                 // handle error
             } else {
+                readFromImageButton.isEnabled = false
                 performOCR(inputImage!!)
             }
         })
@@ -106,13 +112,44 @@ class ViewPictureFragment : Fragment() {
         val recognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS)
         val result = recognizer.process(inputImage)
             .addOnSuccessListener { visionText ->
-            // Task completed successfully
+                // Task completed successfully
                 print("Image to Text completed")
-                print(visionText.text)
-//                Text to speech API goes here
-//                findNavController().navigate(R.id.mediaPlayerFragment)
-            }
-            .addOnFailureListener { e ->
+                val text = visionText.text
+                print(text)
+
+                 //Text to speech API
+                lateinit var tts: TextToSpeech
+                val path = activity?.filesDir?.absolutePath+"/audio.mp3"
+
+                tts = TextToSpeech(activity, object: TextToSpeech.OnInitListener{
+                    override fun onInit(p0: Int) {
+                        if (p0 == TextToSpeech.SUCCESS) {
+                            tts.language = Locale.CANADA
+                            tts.synthesizeToFile(text,null, File(path),"audio.mp3")
+                        }
+                    }
+                })
+
+                tts.setOnUtteranceProgressListener(object : UtteranceProgressListener() {
+                    override fun onStart(utteranceId: String) {
+                        print("TTS started")
+                    }
+
+                    override fun onDone(utteranceId: String) {
+                        val bundle = Bundle()
+                        bundle.putString("text",text)
+                        bundle.putString("title","Image text")
+                        bundle.putString("audioPath",path)
+
+                        setFragmentResult("mediaPlayerDocument",bundle)
+                        findNavController().navigate(R.id.action_viewPictureFragment_to_mediaPlayerFragment)
+                    }
+
+                    override fun onError(utteranceId: String) {
+                        Log.e("TTS error",utteranceId)
+                    }
+                })
+            }.addOnFailureListener { e ->
                 // Task failed with an exception
                 // ...
             }

@@ -31,7 +31,20 @@
         android:id="@+id/viewPictureFragment"
         android:name="com.example.readingassistant.fragments.ViewPictureFragment"
         android:label="fragment_view_picture"
-        tools:layout="@layout/fragment_view_picture" />
+        tools:layout="@layout/fragment_view_picture">
+        <action
+            android:id="@+id/action_viewPictureFragment_to_mediaPlayerFragment"
+            app:destination="@id/mediaPlayerFragment"/>
+    </fragment>
+    <fragment
+        android:id="@+id/mediaPlayerFragment"
+        android:name="com.example.readingassistant.fragments.MediaPlayerFragment"
+        android:label="@string/media_player_fragment_label"
+        tools:layout="@layout/fragment_media_player">
+        <action
+            android:id="@+id/action_mediaPlayerFragment_to_viewPictureFragment"
+            app:destination="@id/viewPictureFragment"/>
+    </fragment>
     <fragment
         android:id="@+id/cameraFragment"
         android:name="com.example.readingassistant.fragments.CameraFragment"
