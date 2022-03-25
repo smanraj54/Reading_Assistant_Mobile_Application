@@ -13,7 +13,9 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.setFragmentResultListener
+import androidx.navigation.fragment.findNavController
 import com.example.readingassistant.R
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.TextRecognition
@@ -105,13 +107,15 @@ class ViewPictureFragment : Fragment() {
         val result = recognizer.process(inputImage)
             .addOnSuccessListener { visionText ->
             // Task completed successfully
-            print("Image to Text completed")
+                print("Image to Text completed")
+                print(visionText.text)
+//                Text to speech API goes here
+//                findNavController().navigate(R.id.mediaPlayerFragment)
             }
             .addOnFailureListener { e ->
                 // Task failed with an exception
                 // ...
             }
-        print(result.result.text)
     }
 
     fun rotateImage(source: Bitmap, angle: Float): Bitmap? {
