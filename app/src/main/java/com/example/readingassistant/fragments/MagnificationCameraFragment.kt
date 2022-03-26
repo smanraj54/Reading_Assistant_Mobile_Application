@@ -1,4 +1,4 @@
-package com.example.readingassistant
+package com.example.readingassistant.fragments
 
 import android.content.pm.PackageManager
 import android.os.Bundle
