@@ -32,7 +32,7 @@
         app:srcCompat="@drawable/ic_baseline_pause_circle_filled_24"
         app:tint="@color/design_default_color_primary"/>
 
-    <com.example.readingassistant.model.HoldButton
+    <ImageButton
         android:id="@+id/rewindButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -44,7 +44,7 @@
         app:srcCompat="@drawable/ic_baseline_fast_rewind_24"
         app:tint="@color/design_default_color_primary"/>
 
-    <com.example.readingassistant.model.HoldButton
+    <ImageButton
         android:id="@+id/fastForwardButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
