@@ -71,7 +71,7 @@ class MediaPlayerFragment : Fragment() {
                 setupMediaPlayer(audio, seekBar)
                 setupPlayButton(seekBar)
            } else {
-               Log.i("MediaPlayer", "No file available")
+               Log.e("MediaPlayer", "No file available")
            }
         }
 
