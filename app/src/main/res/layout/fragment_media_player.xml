@@ -10,7 +10,7 @@
         android:id="@+id/playButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="100dp"
+        android:layout_marginTop="95dp"
         android:background="#FFFFFFFF"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
@@ -23,62 +23,71 @@
         android:id="@+id/pauseButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="100dp"
+        android:layout_marginTop="95dp"
         android:background="#FFFFFFFF"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/seekBar"
         app:srcCompat="@drawable/ic_baseline_pause_circle_filled_24"
-        app:tint="@color/design_default_color_primary"/>
+        app:tint="@color/design_default_color_primary" />
 
     <ImageButton
         android:id="@+id/rewindButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="60dp"
-        android:layout_marginTop="110dp"
+        android:layout_marginTop="105dp"
         android:background="#00FFFFFF"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/seekBar"
         app:srcCompat="@drawable/ic_baseline_fast_rewind_24"
-        app:tint="@color/design_default_color_primary"/>
+        app:tint="@color/design_default_color_primary" />
 
     <ImageButton
         android:id="@+id/fastForwardButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="110dp"
+        android:layout_marginTop="105dp"
         android:layout_marginEnd="60dp"
         android:background="#03FFFFFF"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/seekBar"
         app:srcCompat="@drawable/ic_baseline_fast_forward_24"
-        app:tint="@color/design_default_color_primary"/>
+        app:tint="@color/design_default_color_primary" />
 
     <SeekBar
         android:id="@+id/seekBar"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="20dp"
         android:layout_marginEnd="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/mediaPlayerDocumentText" />
+        app:layout_constraintTop_toBottomOf="@+id/mediaPlayerDocumentScrollView" />
 
-    <TextView
-        android:id="@+id/mediaPlayerDocumentText"
+    <ScrollView
+        android:id="@+id/mediaPlayerDocumentScrollView"
         android:layout_width="0dp"
-        android:layout_height="130dp"
+        android:layout_height="190dp"
         android:layout_marginStart="20dp"
         android:layout_marginTop="10dp"
         android:layout_marginEnd="20dp"
-        android:text="Document text"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintHorizontal_bias="0.99"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/mediaPlayerDocumentTitle" />
+        app:layout_constraintTop_toBottomOf="@+id/mediaPlayerDocumentTitle">
+
+        <TextView
+            android:id="@+id/mediaPlayerDocumentText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Document text"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/mediaPlayerDocumentTitle" />
+    </ScrollView>
 
     <TextView
         android:id="@+id/mediaPlayerDocumentTitle"
@@ -95,12 +104,12 @@
         android:id="@+id/increaseButton"
         android:layout_width="75dp"
         android:layout_height="75dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/ic_baseline_circle_24"
         android:text="Button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/seekBar"
-        android:background="@drawable/ic_baseline_circle_24"/>
+        app:layout_constraintTop_toBottomOf="@+id/seekBar" />
 
     <Button
         android:id="@+id/decreaseButton"
