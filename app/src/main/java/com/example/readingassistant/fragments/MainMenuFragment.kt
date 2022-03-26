@@ -42,9 +42,13 @@ class MainMenuFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val buttonClick = view.findViewById<Button>(R.id.toReadAloudButton)
-        buttonClick.setOnClickListener {
+        val readAloudBtn = view.findViewById<Button>(R.id.toReadAloudButton)
+        val magnifyBtn = view.findViewById<Button>(R.id.toMagnifyButton)
+        readAloudBtn.setOnClickListener {
             findNavController().navigate(R.id.chooseInputMethodFragment)
+        }
+        magnifyBtn.setOnClickListener {
+            findNavController().navigate(R.id.magnificationCameraFragment)
         }
     }
 

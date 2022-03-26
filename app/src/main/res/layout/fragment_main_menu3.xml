@@ -8,13 +8,25 @@
     tools:context=".MainMenuFragment">
 
     <Button
+        android:id="@+id/toMagnifyButton"
+        android:layout_width="130dp"
+        android:layout_height="wrap_content"
+        android:text="MAGNIFY"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toReadAloudButton" />
+
+    <Button
         android:id="@+id/toReadAloudButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="250dp"
         android:text="Read Aloud"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
