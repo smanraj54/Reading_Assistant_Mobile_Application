@@ -42,8 +42,8 @@
         android:label="@string/media_player_fragment_label"
         tools:layout="@layout/fragment_media_player">
         <action
-            android:id="@+id/action_mediaPlayerFragment_to_viewPictureFragment"
-            app:destination="@id/viewPictureFragment"/>
+            android:id="@+id/action_mediaPlayerFragment_to_chooseInputMethodFragment"
+            app:destination="@id/chooseInputMethodFragment"/>
     </fragment>
     <fragment
         android:id="@+id/cameraFragment"
