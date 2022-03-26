@@ -63,7 +63,6 @@ class MediaPlayerFragment : Fragment() {
         val speedControl: SpeedControl = SpeedControl(DoubleArray(7){0.5 +(it*0.25)})
 
         setFragmentResultListener("mediaPlayerDocument") {requestKey, bundle ->
-            binding.mediaPlayerDocumentTitle.text = bundle.getString("title")
             binding.mediaPlayerDocumentText.text = bundle.getString("text")
 
             val audioPath = bundle.getString("audioPath")
