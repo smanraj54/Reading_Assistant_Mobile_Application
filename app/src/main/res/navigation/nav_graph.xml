@@ -50,4 +50,9 @@
         android:name="com.example.readingassistant.fragments.CameraFragment"
         android:label="fragment_camera"
         tools:layout="@layout/fragment_camera" />
+    <fragment
+        android:id="@+id/magnificationCameraFragment"
+        android:name="com.example.readingassistant.MagnificationCameraFragment"
+        android:label="fragment_magnification_camera"
+        tools:layout="@layout/fragment_magnification_camera" />
 </navigation>
