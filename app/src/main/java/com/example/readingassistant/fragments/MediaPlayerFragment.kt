@@ -8,7 +8,6 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -16,12 +15,16 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageButton
 import android.widget.SeekBar
+import android.widget.Toast
+import androidx.camera.core.impl.utils.ContextUtil.getApplicationContext
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResultListener
 import com.example.readingassistant.R
-import com.example.readingassistant.model.SpeedControl
 import com.example.readingassistant.databinding.FragmentMediaPlayerBinding
+import com.example.readingassistant.model.SpeedControl
 import java.io.File
+
 
 class MediaPlayerFragment : Fragment() {
 
@@ -31,11 +34,11 @@ class MediaPlayerFragment : Fragment() {
     // onDestroyView.
     private val binding get() = _binding!!
 
-    private lateinit var mediaPlayer: MediaPlayer
+    private var mediaPlayer: MediaPlayer = MediaPlayer()
     private lateinit var playButton: ImageButton
     private lateinit var pauseButton: ImageButton
     private val seekBarHandler: Handler = Handler(Looper.getMainLooper())
-    private lateinit var updateSeekBar: Runnable
+    private var updateSeekBar: Runnable? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -71,6 +74,7 @@ class MediaPlayerFragment : Fragment() {
                 setupMediaPlayer(audio, seekBar)
            } else {
                binding.mediaPlayerDocumentText.text = getString(R.string.no_text)
+                setupPlayButtonError(seekBar)
                Log.e("MediaPlayer", "No audio file available")
            }
         }
@@ -92,7 +96,12 @@ class MediaPlayerFragment : Fragment() {
                     seekBarHandler.postDelayed(this, 1000)
                 }
             }
-            seekBarHandler.post(updateSeekBar)
+            seekBarHandler.post(updateSeekBar as Runnable)
+        }
+        mediaPlayer.setOnErrorListener { _, _, i2 ->
+            Log.e("MediaPlayer",i2.toString())
+            setupPlayButtonError(seekBar)
+            true
         }
         mediaPlayer.setOnCompletionListener {
             pause()
@@ -100,7 +109,7 @@ class MediaPlayerFragment : Fragment() {
     }
 
     override fun onDestroyView() {
-        seekBarHandler.removeCallbacks(updateSeekBar)
+        updateSeekBar?.let { seekBarHandler.removeCallbacks(it) }
         mediaPlayer.stop()
         mediaPlayer.reset()
         mediaPlayer.release()
@@ -116,6 +125,12 @@ class MediaPlayerFragment : Fragment() {
     private fun setupPlayButton(seekBar: SeekBar) {
         playButton.setOnClickListener {
             play()
+        }
+    }
+
+    private fun setupPlayButtonError(seekBar: SeekBar) {
+        playButton.setOnClickListener {
+            Toast.makeText(activity, "Playback unavailable", Toast.LENGTH_LONG).show()
         }
     }
 

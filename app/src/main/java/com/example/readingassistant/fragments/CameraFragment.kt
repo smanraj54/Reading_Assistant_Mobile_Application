@@ -112,7 +112,7 @@ class CameraFragment : Fragment() {
                         bundle.putString("photoURI", outputFile.absolutePath)
                         bundle.putString("case", "camera")
                         setFragmentResult("photoURIBundle", bundle)
-                        findNavController().navigate(R.id.viewPictureFragment)
+                        findNavController().navigate(R.id.action_cameraFragment_to_viewPictureFragment)
                     }
                 })
         })
