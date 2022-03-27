@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageButton
 import androidx.navigation.fragment.findNavController
 import com.example.readingassistant.R
 
@@ -42,12 +43,10 @@ class MainMenuFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val readAloudBtn = view.findViewById<Button>(R.id.toReadAloudButton)
-        val magnifyBtn = view.findViewById<Button>(R.id.toMagnifyButton)
-        readAloudBtn.setOnClickListener {
+        view.findViewById<ImageButton>(R.id.toReadAloudButton).setOnClickListener {
             findNavController().navigate(R.id.chooseInputMethodFragment)
         }
-        magnifyBtn.setOnClickListener {
+        view.findViewById<ImageButton>(R.id.toMagnifyButton).setOnClickListener {
             findNavController().navigate(R.id.magnificationCameraFragment)
         }
     }

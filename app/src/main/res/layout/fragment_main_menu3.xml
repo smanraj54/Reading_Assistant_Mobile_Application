@@ -7,26 +7,158 @@
     android:layout_height="match_parent"
     tools:context=".MainMenuFragment">
 
-    <Button
-        android:id="@+id/toMagnifyButton"
-        android:layout_width="130dp"
-        android:layout_height="wrap_content"
-        android:text="MAGNIFY"
-        app:layout_constraintBottom_toBottomOf="parent"
+    <ImageButton
+        android:id="@+id/toTranslateButton"
+        android:layout_width="123dp"
+        android:layout_height="129dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginEnd="52dp"
+        android:background="@drawable/imageview_navyblue_border"
+        android:padding="20dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/ic_translation"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/lineView"
+        app:srcCompat="@drawable/ic_translation" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="55dp"
+        android:text="Gallery"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toGalleryButton" />
+
+    <TextView
+        android:id="@+id/textView5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="Converse with Care-Taker"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toConversationButton" />
+
+    <ImageButton
+        android:id="@+id/toGalleryButton"
+        android:layout_width="123dp"
+        android:layout_height="129dp"
+        android:layout_marginStart="56dp"
+        android:layout_marginTop="215dp"
+        android:background="@drawable/imageview_navyblue_border"
+        android:padding="20dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/ic_image_gallery"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/lineView"
+        app:srcCompat="@drawable/ic_image_gallery" />
+
+    <ImageButton
+        android:id="@+id/toReadAloudButton"
+        android:layout_width="123dp"
+        android:layout_height="129dp"
+        android:layout_marginStart="52dp"
+        android:layout_marginTop="30dp"
+        android:background="@drawable/imageview_navyblue_border"
+        android:padding="20dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/ic_audio_book"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/lineView"
+        app:srcCompat="@drawable/ic_audio_book" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="55dp"
+        android:text="Translation"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toTranslateButton" />
+
+    <ImageButton
+        android:id="@+id/toConversationButton"
+        android:layout_width="123dp"
+        android:layout_height="129dp"
+        android:layout_marginTop="390dp"
+        android:background="@drawable/imageview_navyblue_border"
+        android:padding="20dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/ic_bubble_chat"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/lineView"
+        app:srcCompat="@drawable/ic_bubble_chat" />
+
+    <ImageButton
+        android:id="@+id/toMagnifyButton"
+        android:layout_width="123dp"
+        android:layout_height="129dp"
+        android:layout_marginTop="215dp"
+        android:layout_marginEnd="52dp"
+        android:background="@drawable/imageview_navyblue_border"
+        android:padding="20dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/ic_zoom"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/lineView"
+        app:srcCompat="@drawable/ic_zoom" />
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="55dp"
+        android:text="Magnification"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toMagnifyButton" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="55dp"
+        android:text="Read Aloud"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toReadAloudButton" />
 
-    <Button
-        android:id="@+id/toReadAloudButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="250dp"
-        android:text="Read Aloud"
-        app:layout_constraintBottom_toBottomOf="parent"
+    <View
+        android:id="@+id/lineView"
+        android:layout_width="match_parent"
+        android:layout_height="5dp"
+        android:layout_marginTop="70dp"
+        android:background="@color/navy_blue"
+        android:scaleType="fitCenter"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/imageButton"
+        android:layout_width="59dp"
+        android:layout_height="57dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginBottom="6dp"
+        android:backgroundTint="#FFFFFF"
+        android:scaleType="fitCenter"
+        android:src="@drawable/ic_settings"
+        app:layout_constraintBottom_toTopOf="@+id/lineView"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <ImageButton
+        android:id="@+id/imageButton2"
+        android:layout_width="59dp"
+        android:layout_height="57dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="6dp"
+        android:backgroundTint="#FFFFFF"
+        android:scaleType="fitCenter"
+        android:src="@drawable/ic_switch"
+        app:layout_constraintBottom_toTopOf="@+id/lineView"
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
