@@ -1,6 +1,5 @@
 package com.example.readingassistant.fragments
 
-import android.R.attr.bitmap
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
@@ -15,6 +14,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
+import android.widget.ProgressBar
+import android.widget.TextView
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.setFragmentResultListener
@@ -42,6 +44,9 @@ class ViewPictureFragment : Fragment() {
     private var param1: String? = null
     private var param2: String? = null
 
+    private lateinit var progressBar: ProgressBar
+    private lateinit var progressText: TextView
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -60,6 +65,11 @@ class ViewPictureFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        progressBar = view.findViewById(R.id.progressBar)
+        progressText = view.findViewById(R.id.progressText)
+        progressBar.isVisible = false
+        progressText.isVisible = false
 
         var inputImage: InputImage? = null
         setFragmentResultListener("photoURIBundle") {requestKey, bundle ->
@@ -103,21 +113,25 @@ class ViewPictureFragment : Fragment() {
                 // handle error
             } else {
                 readFromImageButton.isEnabled = false
+                readFromImageButton.isVisible = false
+                progressBar.isVisible = true
+                progressText.isVisible = true
                 performOCR(inputImage!!)
             }
         })
     }
 
     private fun performOCR(inputImage: InputImage) {
+        progressText.text = getString(R.string.ocr_progress)
         val recognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS)
         val result = recognizer.process(inputImage)
             .addOnSuccessListener { visionText ->
                 // Task completed successfully
                 print("Image to Text completed")
                 val text = visionText.text
-                print(text)
 
                  //Text to speech API
+                progressText.text = getString(R.string.tts_progress)
                 lateinit var tts: TextToSpeech
                 val path = activity?.filesDir?.absolutePath+"/audio.mp3"
 
@@ -136,13 +150,15 @@ class ViewPictureFragment : Fragment() {
                     }
 
                     override fun onDone(utteranceId: String) {
-                        val bundle = Bundle()
-                        bundle.putString("text",text)
-                        bundle.putString("title","Image text")
-                        bundle.putString("audioPath",path)
+                        activity?.runOnUiThread {
+                            val bundle = Bundle()
+                            bundle.putString("text", text)
+                            bundle.putString("title", "Image text")
+                            bundle.putString("audioPath", path)
 
-                        setFragmentResult("mediaPlayerDocument",bundle)
-                        findNavController().navigate(R.id.action_viewPictureFragment_to_mediaPlayerFragment)
+                            setFragmentResult("mediaPlayerDocument", bundle)
+                            findNavController().navigate(R.id.action_viewPictureFragment_to_mediaPlayerFragment)
+                        }
                     }
 
                     override fun onError(utteranceId: String) {

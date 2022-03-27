@@ -6,111 +6,114 @@
     android:layout_height="match_parent"
     tools:context=".fragments.MediaPlayerFragment">
 
+    <Button
+        android:id="@+id/increaseButton"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
+        android:layout_marginBottom="220dp"
+        android:background="@drawable/ic_baseline_circle_24"
+        android:text="Button"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/seekBar" />
+
+    <Button
+        android:id="@+id/decreaseButton"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
+        android:layout_marginTop="120dp"
+        android:background="@drawable/ic_baseline_circle_24"
+        android:text="Button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/increaseButton" />
+
+    <ImageButton
+        android:id="@+id/rewindButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="60dp"
+        android:layout_marginTop="20dp"
+        android:background="#00FFFFFF"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/increaseButton"
+        app:srcCompat="@drawable/ic_baseline_fast_rewind_24"
+        app:tint="@color/design_default_color_primary" />
+
+    <ImageButton
+        android:id="@+id/fastForwardButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="60dp"
+        android:background="#03FFFFFF"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/increaseButton"
+        app:srcCompat="@drawable/ic_baseline_fast_forward_24"
+        app:tint="@color/design_default_color_primary" />
+
     <ImageButton
         android:id="@+id/playButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="100dp"
+        android:layout_marginTop="84dp"
         android:background="#FFFFFFFF"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/seekBar"
+        app:layout_constraintTop_toTopOf="@+id/increaseButton"
         app:srcCompat="@drawable/ic_baseline_play_circle_filled_24"
-        app:tint="@color/design_default_color_primary"/>
+        app:tint="@color/design_default_color_primary" />
 
     <ImageButton
         android:id="@+id/pauseButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="100dp"
+        android:layout_marginTop="10dp"
         android:background="#FFFFFFFF"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/seekBar"
+        app:layout_constraintTop_toBottomOf="@+id/increaseButton"
         app:srcCompat="@drawable/ic_baseline_pause_circle_filled_24"
-        app:tint="@color/design_default_color_primary"/>
+        app:tint="@color/design_default_color_primary" />
 
-    <com.example.readingassistant.model.HoldButton
-        android:id="@+id/rewindButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="60dp"
-        android:layout_marginTop="110dp"
-        android:background="#00FFFFFF"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/seekBar"
-        app:srcCompat="@drawable/ic_baseline_fast_rewind_24"
-        app:tint="@color/design_default_color_primary"/>
-
-    <com.example.readingassistant.model.HoldButton
-        android:id="@+id/fastForwardButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="110dp"
-        android:layout_marginEnd="60dp"
-        android:background="#03FFFFFF"
+    <ScrollView
+        android:id="@+id/mediaPlayerDocumentScrollView"
+        android:layout_width="0dp"
+        android:layout_height="190dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="20dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/seekBar"
-        app:srcCompat="@drawable/ic_baseline_fast_forward_24"
-        app:tint="@color/design_default_color_primary"/>
+        app:layout_constraintHorizontal_bias="0.99"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/mediaPlayerDocumentText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Document text"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/mediaPlayerDocumentTitle" />
+    </ScrollView>
 
     <SeekBar
         android:id="@+id/seekBar"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
-        android:layout_marginTop="50dp"
-        android:layout_marginEnd="10dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/mediaPlayerDocumentText" />
-
-    <TextView
-        android:id="@+id/mediaPlayerDocumentText"
-        android:layout_width="0dp"
-        android:layout_height="130dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="20dp"
-        android:text="Document text"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/mediaPlayerDocumentTitle" />
-
-    <TextView
-        android:id="@+id/mediaPlayerDocumentTitle"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="50dp"
-        android:text="Document title"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
-        android:id="@+id/increaseButton"
-        android:layout_width="75dp"
-        android:layout_height="75dp"
         android:layout_marginTop="20dp"
-        android:text="Button"
+        android:layout_marginEnd="10dp"
+        android:indeterminate="false"
+        android:progressTint="@color/design_default_color_primary_variant"
+        android:thumb="@drawable/ic_baseline_circle_20"
+        android:thumbTint="@color/design_default_color_primary"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/seekBar"
-        android:background="@drawable/ic_baseline_circle_24"/>
-
-    <Button
-        android:id="@+id/decreaseButton"
-        android:layout_width="75dp"
-        android:layout_height="75dp"
-        android:layout_marginTop="110dp"
-        android:background="@drawable/ic_baseline_circle_24"
-        android:text="Button"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/increaseButton" />
+        app:layout_constraintTop_toBottomOf="@+id/mediaPlayerDocumentScrollView"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

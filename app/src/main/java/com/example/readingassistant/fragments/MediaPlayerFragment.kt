@@ -1,5 +1,6 @@
 package com.example.readingassistant.fragments
 
+import android.annotation.SuppressLint
 import android.media.MediaPlayer
 import android.media.PlaybackParams
 import android.net.Uri
@@ -20,7 +21,6 @@ import androidx.fragment.app.setFragmentResultListener
 import com.example.readingassistant.R
 import com.example.readingassistant.model.SpeedControl
 import com.example.readingassistant.databinding.FragmentMediaPlayerBinding
-import com.example.readingassistant.model.HoldButton
 import java.io.File
 
 class MediaPlayerFragment : Fragment() {
@@ -55,27 +55,25 @@ class MediaPlayerFragment : Fragment() {
         pauseButton = view.findViewById(R.id.pauseButton)
         pauseButton.isVisible = false
 
-        val fastForwardButton: HoldButton = view.findViewById(R.id.fastForwardButton)
-        val rewindButton: HoldButton = view.findViewById(R.id.rewindButton)
+        val fastForwardButton: ImageButton = view.findViewById(R.id.fastForwardButton)
+        val rewindButton: ImageButton = view.findViewById(R.id.rewindButton)
         val increaseButton: Button = view.findViewById(R.id.increaseButton)
         val decreaseButton: Button = view.findViewById(R.id.decreaseButton)
         val seekBar: SeekBar = view.findViewById(R.id.seekBar)
         val speedControl: SpeedControl = SpeedControl(DoubleArray(7){0.5 +(it*0.25)})
 
         setFragmentResultListener("mediaPlayerDocument") {requestKey, bundle ->
-            binding.mediaPlayerDocumentTitle.text = bundle.getString("title")
-            binding.mediaPlayerDocumentText.text = bundle.getString("text")
-
+            val text = bundle.getString("text")
             val audioPath = bundle.getString("audioPath")
-            if (audioPath != null) {
+            if (!text.isNullOrBlank() && audioPath != null) {
+                binding.mediaPlayerDocumentText.text = text
                 audio = Uri.fromFile(File(audioPath))
                 setupMediaPlayer(audio, seekBar)
-                setupPlayButton(seekBar)
            } else {
-               Log.i("MediaPlayer", "No file available")
+               binding.mediaPlayerDocumentText.text = getString(R.string.no_text)
+               Log.e("MediaPlayer", "No audio file available")
            }
         }
-
         setupPauseButton()
         setupSpeedButtons(speedControl, increaseButton, decreaseButton)
         setupFastForward(fastForwardButton)
@@ -85,15 +83,17 @@ class MediaPlayerFragment : Fragment() {
 
     private fun setupMediaPlayer(audio: Uri, seekBar: SeekBar) {
         mediaPlayer = MediaPlayer.create(activity?.applicationContext, audio)
-        seekBar.max = mediaPlayer.duration
-
-        updateSeekBar = object : Runnable {
-            override fun run() {
-                seekBar.progress = mediaPlayer.currentPosition
-                seekBarHandler.postDelayed(this, 1000)
+        mediaPlayer.setOnPreparedListener {
+            setupPlayButton(seekBar)
+            seekBar.max = mediaPlayer.duration
+                    updateSeekBar = object : Runnable {
+                override fun run() {
+                    seekBar.progress = mediaPlayer.currentPosition
+                    seekBarHandler.postDelayed(this, 1000)
+                }
             }
+            seekBarHandler.post(updateSeekBar)
         }
-        seekBarHandler.post(updateSeekBar)
         mediaPlayer.setOnCompletionListener {
             pause()
         }
@@ -164,7 +164,10 @@ class MediaPlayerFragment : Fragment() {
         }
     }
 
-    private fun setupFastForward(fastForwardButton: HoldButton) {
+    @SuppressLint("ClickableViewAccessibility")
+    //ClickableViewAccessibility warning handled by calling performClick in the on touch listener
+    //and keeping the logic in the on click listener
+    private fun setupFastForward(fastForwardButton: ImageButton) {
         //setup fast forward button listener
         val handler = Handler(Looper.getMainLooper())
         val runnable = object : Runnable {
@@ -198,7 +201,10 @@ class MediaPlayerFragment : Fragment() {
         }
     }
 
-    private fun setupRewindButton(rewindButton: HoldButton) {
+    @SuppressLint("ClickableViewAccessibility")
+    //ClickableViewAccessibility warning handled by calling performClick in the on touch listener
+    //and keeping the logic in the on click listener
+    private fun setupRewindButton(rewindButton: ImageButton) {
         //setup rewind button listener
         val handler: Handler = Handler(Looper.getMainLooper())
         val runnable = object : Runnable {
@@ -260,4 +266,5 @@ class MediaPlayerFragment : Fragment() {
         playButton.isVisible = false
         pauseButton.isVisible = true
     }
+
 }
