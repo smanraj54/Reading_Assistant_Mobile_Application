@@ -63,18 +63,17 @@ class MediaPlayerFragment : Fragment() {
         val speedControl: SpeedControl = SpeedControl(DoubleArray(7){0.5 +(it*0.25)})
 
         setFragmentResultListener("mediaPlayerDocument") {requestKey, bundle ->
-            binding.mediaPlayerDocumentText.text = bundle.getString("text")
-
+            val text = bundle.getString("text")
             val audioPath = bundle.getString("audioPath")
-            if (audioPath != null) {
+            if (!text.isNullOrBlank() && audioPath != null) {
+                binding.mediaPlayerDocumentText.text = text
                 audio = Uri.fromFile(File(audioPath))
                 setupMediaPlayer(audio, seekBar)
-                setupPlayButton(seekBar)
            } else {
-               Log.e("MediaPlayer", "No file available")
+               binding.mediaPlayerDocumentText.text = getString(R.string.no_text)
+               Log.e("MediaPlayer", "No audio file available")
            }
         }
-
         setupPauseButton()
         setupSpeedButtons(speedControl, increaseButton, decreaseButton)
         setupFastForward(fastForwardButton)
@@ -84,15 +83,17 @@ class MediaPlayerFragment : Fragment() {
 
     private fun setupMediaPlayer(audio: Uri, seekBar: SeekBar) {
         mediaPlayer = MediaPlayer.create(activity?.applicationContext, audio)
-        seekBar.max = mediaPlayer.duration
-
-        updateSeekBar = object : Runnable {
-            override fun run() {
-                seekBar.progress = mediaPlayer.currentPosition
-                seekBarHandler.postDelayed(this, 1000)
+        mediaPlayer.setOnPreparedListener {
+            setupPlayButton(seekBar)
+            seekBar.max = mediaPlayer.duration
+                    updateSeekBar = object : Runnable {
+                override fun run() {
+                    seekBar.progress = mediaPlayer.currentPosition
+                    seekBarHandler.postDelayed(this, 1000)
+                }
             }
+            seekBarHandler.post(updateSeekBar)
         }
-        seekBarHandler.post(updateSeekBar)
         mediaPlayer.setOnCompletionListener {
             pause()
         }
