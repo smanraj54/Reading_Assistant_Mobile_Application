@@ -150,13 +150,15 @@ class ViewPictureFragment : Fragment() {
                     }
 
                     override fun onDone(utteranceId: String) {
-                        val bundle = Bundle()
-                        bundle.putString("text",text)
-                        bundle.putString("title","Image text")
-                        bundle.putString("audioPath",path)
+                        activity?.runOnUiThread {
+                            val bundle = Bundle()
+                            bundle.putString("text", text)
+                            bundle.putString("title", "Image text")
+                            bundle.putString("audioPath", path)
 
-                        setFragmentResult("mediaPlayerDocument",bundle)
-                        findNavController().navigate(R.id.action_viewPictureFragment_to_mediaPlayerFragment)
+                            setFragmentResult("mediaPlayerDocument", bundle)
+                            findNavController().navigate(R.id.action_viewPictureFragment_to_mediaPlayerFragment)
+                        }
                     }
 
                     override fun onError(utteranceId: String) {

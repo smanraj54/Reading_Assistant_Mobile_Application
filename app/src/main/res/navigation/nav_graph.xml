@@ -12,16 +12,19 @@
     <fragment
         android:id="@+id/chooseInputMethodFragment"
         android:name="com.example.readingassistant.fragments.ChooseInputMethodFragment"
-        android:label="fragment_choose_input_method"
+        android:label="@string/media_player_fragment_label"
         tools:layout="@layout/fragment_choose_input_method" >
         <action
             android:id="@+id/action_chooseInputMethodFragment_to_viewPictureFragment"
             app:destination="@id/viewPictureFragment" />
+        <action
+            android:id="@+id/action_chooseInputMethodFragment_to_mainMenuFragment"
+            app:destination="@id/mainMenuFragment"/>
     </fragment>
     <fragment
         android:id="@+id/mainMenuFragment"
         android:name="com.example.readingassistant.fragments.MainMenuFragment"
-        android:label="fragment_main_menu3"
+        android:label="@string/main_menu_fragment_label"
         tools:layout="@layout/fragment_main_menu3" >
         <action
             android:id="@+id/action_mainMenuFragment_to_chooseInputMethodFragment3"
@@ -30,11 +33,16 @@
     <fragment
         android:id="@+id/viewPictureFragment"
         android:name="com.example.readingassistant.fragments.ViewPictureFragment"
-        android:label="fragment_view_picture"
+        android:label="@string/media_player_fragment_label"
         tools:layout="@layout/fragment_view_picture">
         <action
             android:id="@+id/action_viewPictureFragment_to_mediaPlayerFragment"
-            app:destination="@id/mediaPlayerFragment"/>
+            app:destination="@id/mediaPlayerFragment"
+            app:popUpTo="@+id/viewPictureFragment"
+            app:popUpToInclusive="true"/>
+        <action
+            android:id="@+id/action_viewPictureFragment_to_chooseInputMethodFragment"
+            app:destination="@id/chooseInputMethodFragment"/>
     </fragment>
     <fragment
         android:id="@+id/mediaPlayerFragment"
@@ -43,16 +51,24 @@
         tools:layout="@layout/fragment_media_player">
         <action
             android:id="@+id/action_mediaPlayerFragment_to_chooseInputMethodFragment"
-            app:destination="@id/chooseInputMethodFragment"/>
+            app:destination="@id/chooseInputMethodFragment" />
     </fragment>
     <fragment
         android:id="@+id/cameraFragment"
         android:name="com.example.readingassistant.fragments.CameraFragment"
-        android:label="fragment_camera"
-        tools:layout="@layout/fragment_camera" />
+        android:label="@string/camera_fragment_label"
+        tools:layout="@layout/fragment_camera">
+        <action
+            android:id="@+id/action_cameraFragment_to_chooseInputMethodFragment"
+            app:destination="@id/chooseInputMethodFragment"/>
+    </fragment>
     <fragment
         android:id="@+id/magnificationCameraFragment"
         android:name="com.example.readingassistant.fragments.MagnificationCameraFragment"
-        android:label="fragment_magnification_camera"
-        tools:layout="@layout/fragment_magnification_camera" />
+        android:label="@string/magnifier_fragment_label"
+        tools:layout="@layout/fragment_magnification_camera" >
+        <action
+            android:id="@+id/action_magnificationCameraFragment_to_mainMenuFragment"
+            app:destination="@id/mainMenuFragment"/>
+    </fragment>
 </navigation>

@@ -265,4 +265,5 @@ class MediaPlayerFragment : Fragment() {
         playButton.isVisible = false
         pauseButton.isVisible = true
     }
+
 }

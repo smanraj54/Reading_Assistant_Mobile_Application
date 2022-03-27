@@ -2,15 +2,14 @@
     <string name="app_name">Reading Assistant</string>
     <string name="no_title">No title</string>
     <string name="no_text">No text available</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="title_activity_example">ExampleActivity</string>
-    <!-- Strings used for fragments for navigation -->
-    <string name="tts_fragment_label">TTS Fragment</string>
-    <string name="media_player_fragment_label">Read Aloud</string>
     <string name="min_label">min</string>
     <string name="max_label">max</string>
     <string name="speed_label">x%.2f</string>
     <string name="ocr_progress">processing text</string>
     <string name="tts_progress">preparing audio</string>
-
+    <!-- Strings used for fragments for navigation -->
+    <string name="media_player_fragment_label">Read Aloud</string>
+    <string name="main_menu_fragment_label">Main Menu</string>
+    <string name="camera_fragment_label">Camera</string>
+    <string name="magnifier_fragment_label">Magnifier</string>
 </resources>
