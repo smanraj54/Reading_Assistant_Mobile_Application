@@ -109,7 +109,7 @@
         android:layout_marginTop="20dp"
         android:layout_marginEnd="10dp"
         android:indeterminate="false"
-        android:progressTint="@color/design_default_color_primary_variant"
+        android:progressTint="@color/design_default_color_primary"
         android:thumb="@drawable/ic_baseline_circle_20"
         android:thumbTint="@color/design_default_color_primary"
         app:layout_constraintEnd_toEndOf="parent"
