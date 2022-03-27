@@ -1,19 +1,29 @@
 package com.example.readingassistant
 
 import android.os.Bundle
-import android.os.StrictMode
-import androidx.appcompat.app.AppCompatActivity
-import com.example.readingassistant.persistence.Persistence
-
+import androidx.navigation.findNavController
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.navigateUp
+import androidx.navigation.ui.setupActionBarWithNavController
 
 class MainActivity : AppCompatActivity() {
+
+    private lateinit var appBarConfiguration: AppBarConfiguration
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        Persistence.mainActivity = this
-        if (android.os.Build.VERSION.SDK_INT > 9) {
-            StrictMode.setThreadPolicy(StrictMode.ThreadPolicy.Builder().permitAll().build());
-        }
+
+        setSupportActionBar(findViewById(R.id.toolbar))
+        val navController = findNavController(R.id.fragment_container_view)
+        appBarConfiguration = AppBarConfiguration(navController.graph)
+        setupActionBarWithNavController(navController, appBarConfiguration)
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        val navController = findNavController(R.id.fragment_container_view)
+        return navController.navigateUp(appBarConfiguration)
+                || super.onSupportNavigateUp()
     }
 }
 
