@@ -46,7 +46,6 @@ class CategoryFragment : Fragment() {
             val result = task.result.children
 
             for ( r in result) {
-                println(r.toString())
                 val category = CustomClassMapper.convertToCustomClass(r.value, Category::class.java)
                 Persistence.categories.add(category)
             }
