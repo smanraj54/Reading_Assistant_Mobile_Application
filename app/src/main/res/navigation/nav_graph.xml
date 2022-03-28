@@ -79,11 +79,11 @@
     <fragment
         android:id="@+id/loginFragment"
         android:name="com.example.readingassistant.loginFragment"
-        android:label="fragment_login"
+        android:label="Login"
         tools:layout="@layout/fragment_login" />
     <fragment
         android:id="@+id/registerFragment"
         android:name="com.example.readingassistant.RegisterFragment"
-        android:label="fragment_register"
+        android:label="Register"
         tools:layout="@layout/fragment_register" />
 </navigation>
