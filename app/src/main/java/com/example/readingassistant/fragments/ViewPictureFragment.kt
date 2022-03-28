@@ -19,6 +19,7 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.core.net.toUri
+import android.widget.*
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResult
@@ -130,9 +131,9 @@ class ViewPictureFragment : Fragment() {
 
         val readFromImageButton = view.findViewById<Button>(R.id.readFromImageButton)
         readFromImageButton.setOnClickListener(View.OnClickListener {
-            // translate api
             if (inputImage == null) {
-                // handle error
+                displayError("The image could not be loaded")
+                this.requireActivity().supportFragmentManager.popBackStackImmediate()
             } else {
                 readFromImageButton.isEnabled = false
                 readFromImageButton.isVisible = false
@@ -151,6 +152,7 @@ class ViewPictureFragment : Fragment() {
                 // Task completed successfully
                 print("Image to Text completed")
                 val text = visionText.text
+                val thisActivity = this.requireActivity()
 
                  //Text to speech API
                 progressText.text = getString(R.string.tts_progress)
@@ -198,11 +200,13 @@ class ViewPictureFragment : Fragment() {
 
                     override fun onError(utteranceId: String) {
                         Log.e("TTS error",utteranceId)
+                        displayError("Text-to-Speech failed")
+                        thisActivity.supportFragmentManager.popBackStackImmediate()
                     }
                 })
             }.addOnFailureListener { e ->
-                // Task failed with an exception
-                // ...
+                displayError("Text extraction from image failed")
+                this.requireActivity().supportFragmentManager.popBackStackImmediate()
             }
     }
 
@@ -213,7 +217,11 @@ class ViewPictureFragment : Fragment() {
             source, 0, 0, source.width, source.height,
             matrix, true
         )
-    } // https://stackoverflow.com/a/14066265
+    }
+
+    private fun displayError(message: String) {
+        Toast.makeText(this.activity, message, Toast.LENGTH_SHORT).show()
+    }
 
     companion object {
         /**
