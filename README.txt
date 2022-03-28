@@ -59,3 +59,9 @@ Zifan Liu <br />
 [9] performClick, A., 2022. Android button has setOnTouchListener called on it but does not override performClick. [online] Stack Overflow. Available at: <https://stackoverflow.com/questions/47107105/android-button-has-setontouchlistener-called-on-it-but-does-not-override-perform> [Accessed 28 March 2022].
 
 [10] Tutorialspoint.com. 2022. Android - MediaPlayer. [online] Available at: <https://www.tutorialspoint.com/android/android_mediaplayer.htm> [Accessed 28 March 2022].
+
+[11] [duplicate], I., Satvara, R., Chodankar, S., Badjatya, R. and AbbAsi, A., 2022. In Firebase after uploading Image how can I get Url?. [online] Stack Overflow. Available at: <https://stackoverflow.com/questions/40177250/in-firebase-after-uploading-image-how-can-i-get-url> [Accessed 28 March 2022].
+
+[12] Android, H., 2022. How to add a border to an ImageButton in Android. [online] Android--code.com. Available at: <https://www.android--code.com/2015/08/android-imagebutton-border.html> [Accessed 28 March 2022].
+
+[13] Android?, W., Herwade, S., Robinson, J. and Eltamawy, S., 2022. Why does an image captured using camera intent gets rotated on some devices on Android?. [online] Stack Overflow. Available at: <https://stackoverflow.com/a/14066265> [Accessed 28 March 2022].
