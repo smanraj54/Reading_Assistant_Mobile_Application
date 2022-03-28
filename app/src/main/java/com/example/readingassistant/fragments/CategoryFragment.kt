@@ -1,4 +1,4 @@
-package com.example.readingassistant.fragment
+package com.example.readingassistant.fragments
 
 import android.annotation.SuppressLint
 import android.os.Bundle
@@ -9,8 +9,6 @@ import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.navigation.fragment.findNavController
-import com.example.readingassistant.MainActivity
 import com.example.readingassistant.R
 import com.example.readingassistant.adapters.CategoryRecyclerViewAdapter
 import com.example.readingassistant.model.Category

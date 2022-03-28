@@ -12,7 +12,7 @@ import java.io.InputStream
 import java.net.HttpURLConnection
 import java.net.URL
 
-public class ImageRecyclerViewAdapter(val pictures: ArrayList<Picture>):
+public class ImageRecyclerViewAdapter(val Pictures: ArrayList<Picture>):
         RecyclerView.Adapter<ImageRecyclerViewAdapter.ImageItem>() {
 
     inner class ImageItem(imageItemView: View?): RecyclerView.ViewHolder(imageItemView!!) {
@@ -28,9 +28,9 @@ public class ImageRecyclerViewAdapter(val pictures: ArrayList<Picture>):
 
     override fun onBindViewHolder(holder: ImageItem, position: Int) {
         val imageView = holder.imageView
-        val picture: Picture = this.pictures[0]
+        val Picture: Picture = this.Pictures[0]
         Persistence.mainActivity.runOnUiThread(Thread{
-            val url = URL(picture.url)
+            val url = URL(Picture.url)
             val conn: HttpURLConnection = url.openConnection() as HttpURLConnection
             conn.doInput = true
             conn.connectTimeout = 5000
@@ -43,7 +43,7 @@ public class ImageRecyclerViewAdapter(val pictures: ArrayList<Picture>):
     }
 
     override fun getItemCount(): Int {
-        return this.pictures.size
+        return this.Pictures.size
     }
 
 

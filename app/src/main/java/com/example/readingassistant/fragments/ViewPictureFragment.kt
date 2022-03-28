@@ -3,8 +3,10 @@ package com.example.readingassistant.fragments
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
+import com.example.readingassistant.model.Picture
 import android.media.ExifInterface
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.speech.tts.TextToSpeech
 import android.speech.tts.UtteranceProgressListener
@@ -16,16 +18,25 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.annotation.RequiresApi
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.setFragmentResultListener
 import androidx.navigation.fragment.findNavController
 import com.example.readingassistant.R
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.FirebaseStorage
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.TextRecognition
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions
+import com.google.type.DateTime
 import java.io.File
+import java.time.LocalDate
+import java.time.LocalDateTime
 import java.util.*
 
 
@@ -43,6 +54,7 @@ class ViewPictureFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
+    private lateinit var photoToSave: Uri
 
     private lateinit var progressBar: ProgressBar
     private lateinit var progressText: TextView
@@ -73,7 +85,8 @@ class ViewPictureFragment : Fragment() {
 
         var inputImage: InputImage? = null
         setFragmentResultListener("photoURIBundle") {requestKey, bundle ->
-            val photoURI = bundle.getString("photoURI")
+            var photoURI = bundle.getString("photoURI")
+            photoToSave = Uri.parse(photoURI)
             var bitmap: Bitmap?
 
             if (bundle.getString("case") == "gallery") {
@@ -149,8 +162,21 @@ class ViewPictureFragment : Fragment() {
                         print("TTS started")
                     }
 
+                    @RequiresApi(Build.VERSION_CODES.O)
                     override fun onDone(utteranceId: String) {
-                        activity?.runOnUiThread {
+
+                        val database = Firebase.database.reference
+                        val storage = FirebaseStorage.getInstance().reference.child(LocalDateTime.now().toString()+".png")
+                        val uploadPhoto = storage.putFile(photoToSave)
+                        uploadPhoto.addOnSuccessListener {
+                            it.metadata?.reference?.downloadUrl?.addOnCompleteListener { task ->
+                                val url = task.result.toString()
+                                val picture = Picture("","",url)
+                                val category = database.child("categorys/1/pictrues").push().setValue(picture)                         }
+                        }.addOnFailureListener {
+                            Log.e("Image save failure",it.toString())
+                        }
+                           activity?.runOnUiThread {
                             val bundle = Bundle()
                             bundle.putString("text", text)
                             bundle.putString("title", "Image text")

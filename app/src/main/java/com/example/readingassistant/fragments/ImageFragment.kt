@@ -1,4 +1,4 @@
-package com.example.readingassistant.fragment
+package com.example.readingassistant.fragments
 
 import android.annotation.SuppressLint
 import android.os.Bundle
