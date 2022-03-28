@@ -1,8 +1,10 @@
 package com.example.readingassistant.adapters;
 import android.graphics.BitmapFactory
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.readingassistant.R
@@ -12,12 +14,11 @@ import java.io.InputStream
 import java.net.HttpURLConnection
 import java.net.URL
 
-public class ImageRecyclerViewAdapter(val Pictures: Map<String,Picture>):
+class ImageRecyclerViewAdapter(val Pictures: ArrayList<Picture>):
         RecyclerView.Adapter<ImageRecyclerViewAdapter.ImageItem>() {
 
     inner class ImageItem(imageItemView: View?): RecyclerView.ViewHolder(imageItemView!!) {
         val imageView: ImageView? = imageItemView?.findViewById(R.id.image_view_item)
-        var itemPosition = 0
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageItem {
@@ -27,10 +28,11 @@ public class ImageRecyclerViewAdapter(val Pictures: Map<String,Picture>):
     }
 
     override fun onBindViewHolder(holder: ImageItem, position: Int) {
+        Log.e("INDEX",position.toString())
         val imageView = holder.imageView
-        val Picture: Picture = this.Pictures.values.elementAt(position)
+        val picture: Picture = Pictures.get(position)
         Persistence.mainActivity.runOnUiThread(Thread{
-            val url = URL(Picture.url)
+            val url = URL(picture.url)
             val conn: HttpURLConnection = url.openConnection() as HttpURLConnection
             conn.doInput = true
             conn.connectTimeout = 5000

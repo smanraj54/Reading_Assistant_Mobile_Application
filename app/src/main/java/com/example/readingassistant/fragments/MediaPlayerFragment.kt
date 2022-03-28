@@ -74,7 +74,7 @@ class MediaPlayerFragment : Fragment() {
                 setupMediaPlayer(audio, seekBar)
            } else {
                binding.mediaPlayerDocumentText.text = getString(R.string.no_text)
-                setupPlayButtonError(seekBar)
+               setupPlayButtonError(seekBar)
                Log.e("MediaPlayer", "No audio file available")
            }
         }

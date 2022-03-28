@@ -13,7 +13,11 @@
         android:id="@+id/category_fragment"
         android:name="com.example.readingassistant.fragments.CategoryFragment"
         android:label="Gallery"
-        tools:layout="@layout/category_fragment_list"/>
+        tools:layout="@layout/category_fragment_list">
+        <action
+            android:id="@+id/category_fragment_to_mediaPlayerFragment"
+            app:destination="@id/viewPictureFragment" />
+    </fragment>
     <fragment
         android:id="@+id/chooseInputMethodFragment"
         android:name="com.example.readingassistant.fragments.ChooseInputMethodFragment"

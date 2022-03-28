@@ -2,17 +2,18 @@ package com.example.readingassistant.fragments
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.setFragmentResult
+import androidx.navigation.fragment.findNavController
 import com.example.readingassistant.R
-import com.example.readingassistant.adapters.CategoryRecyclerViewAdapter
 import com.example.readingassistant.adapters.ImageRecyclerViewAdapter
 import com.example.readingassistant.model.Category
+import com.example.readingassistant.model.Picture
 import com.example.readingassistant.persistence.Persistence
 import com.google.firebase.database.core.utilities.encoding.CustomClassMapper
 import com.google.firebase.database.ktx.database
@@ -50,13 +51,22 @@ class CategoryFragment : Fragment() {
                 Persistence.categories.add(category)
                // Log.d("A", category.toString());
             }
-
-            val listRecyclerViewAdapter = ImageRecyclerViewAdapter(Persistence.categories[0].pictrues)
+            var pictureList: ArrayList<Picture> = ArrayList()
+            for (p in Persistence.categories[0].pictrues.entries){
+                pictureList.add(p.value)
+            }
+            val listRecyclerViewAdapter = ImageRecyclerViewAdapter(pictureList)
             recyclerView.adapter = listRecyclerViewAdapter
         }
 
         recyclerView.setOnClickListener { view->
-            print(view)
+           /* val bundle = Bundle()
+            bundle.putString("photoURI", text)
+            bundle.putString("title", "Image text")
+            bundle.putString("audioPath", path)
+
+            setFragmentResult("photoURIBundle", bundle)
+            findNavController().navigate(R.id.category_fragment_to_mediaPlayerFragment)*/
         }
     }
 
