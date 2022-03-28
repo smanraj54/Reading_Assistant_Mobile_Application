@@ -16,6 +16,7 @@ import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.setFragmentResult
+import androidx.fragment.app.setFragmentResultListener
 import androidx.navigation.fragment.findNavController
 import com.example.readingassistant.Constants
 
@@ -34,11 +35,19 @@ class ChooseInputMethodFragment : Fragment() {
     private var param1: String? = null
     private var param2: String? = null
 
+    private var navigationBundle: Bundle? = Bundle()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
+        }
+
+        setFragmentResultListener("actionBundle") { requestKey, bundle ->
+            if (bundle.getString("translate") == "true") {
+                this.navigationBundle = bundle
+            }
         }
     }
 
@@ -56,6 +65,7 @@ class ChooseInputMethodFragment : Fragment() {
         val galleryButton = view.findViewById<ImageButton>(R.id.openGalleryButton)
 
         cameraButton.setOnClickListener(View.OnClickListener {
+            this.navigationBundle?.let { it1 -> setFragmentResult("actionBundle", it1) }
             findNavController().navigate(R.id.cameraFragment)
         })
 
@@ -70,10 +80,9 @@ class ChooseInputMethodFragment : Fragment() {
             result: ActivityResult ->
         if (result.resultCode == Activity.RESULT_OK) {
             val photoURI = result.data?.data
-            val bundle = Bundle()
-            bundle.putString("photoURI", photoURI.toString())
-            bundle.putString("case", "gallery")
-            setFragmentResult("photoURIBundle", bundle)
+            this.navigationBundle?.putString("photoURI", photoURI.toString())
+            this.navigationBundle?.putString("case", "gallery")
+            this.navigationBundle?.let { setFragmentResult("photoURIBundle", it) }
             findNavController().navigate(R.id.action_chooseInputMethodFragment_to_viewPictureFragment)
         } else {
             displayError("Gallery could not be opened")

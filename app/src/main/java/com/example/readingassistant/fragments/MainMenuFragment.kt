@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageButton
+import androidx.fragment.app.setFragmentResult
 import androidx.navigation.fragment.findNavController
 import com.example.readingassistant.R
 
@@ -48,6 +49,12 @@ class MainMenuFragment : Fragment() {
         }
         view.findViewById<ImageButton>(R.id.toMagnifyButton).setOnClickListener {
             findNavController().navigate(R.id.magnificationCameraFragment)
+        }
+        view.findViewById<ImageButton>(R.id.toTranslateButton).setOnClickListener {
+            var bundle = Bundle()
+            bundle.putString("translate", "true")
+            setFragmentResult("actionBundle", bundle)
+            findNavController().navigate(R.id.chooseInputMethodFragment)
         }
     }
 

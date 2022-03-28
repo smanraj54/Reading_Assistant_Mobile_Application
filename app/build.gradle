@@ -1,3 +1,13 @@
+buildscript {
+    repositories {
+        google()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:4.2.0'
+    }
+}
+
+
 plugins {
     id 'com.android.application'
     id 'kotlin-android'
@@ -70,4 +80,6 @@ dependencies {
     // To perform on-devide image-to-text conversion - mlkit text recognition api
     // To recognize Latin script
     implementation 'com.google.mlkit:text-recognition:16.0.0-beta3'
+    // to translate the text
+    implementation 'com.google.mlkit:translate:17.0.0'
 }

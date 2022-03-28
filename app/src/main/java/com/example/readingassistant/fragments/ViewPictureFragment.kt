@@ -19,6 +19,9 @@ import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.setFragmentResultListener
 import androidx.navigation.fragment.findNavController
 import com.example.readingassistant.R
+import com.google.mlkit.common.model.DownloadConditions
+import com.google.mlkit.nl.translate.*
+import com.google.mlkit.nl.translate.TranslateRemoteModel.*
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.TextRecognition
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions
@@ -43,6 +46,8 @@ class ViewPictureFragment : Fragment() {
 
     private lateinit var progressBar: ProgressBar
     private lateinit var progressText: TextView
+
+    private var translate: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -72,6 +77,10 @@ class ViewPictureFragment : Fragment() {
         setFragmentResultListener("photoURIBundle") {requestKey, bundle ->
             val photoURI = bundle.getString("photoURI")
             var bitmap: Bitmap?
+
+            if (bundle.getString("translate") == "true") {
+                this.translate = true
+            }
 
             if (bundle.getString("case") == "gallery") {
                 val inputImageStream = context?.getContentResolver()?.openInputStream(Uri.parse(photoURI))
@@ -125,50 +134,85 @@ class ViewPictureFragment : Fragment() {
             .addOnSuccessListener { visionText ->
                 // Task completed successfully
                 print("Image to Text completed")
-                val text = visionText.text
+                var text = visionText.text
                 val thisActivity = this.requireActivity()
 
-                 //Text to speech API
-                progressText.text = getString(R.string.tts_progress)
-                lateinit var tts: TextToSpeech
-                val path = activity?.filesDir?.absolutePath+"/audio.mp3"
-
-                tts = TextToSpeech(activity, object: TextToSpeech.OnInitListener{
-                    override fun onInit(p0: Int) {
-                        if (p0 == TextToSpeech.SUCCESS) {
-                            tts.language = Locale.CANADA
-                            tts.synthesizeToFile(text,null, File(path),"audio.mp3")
+                // Translate
+                if (translate) {
+                    val options = TranslatorOptions.Builder()
+                        .setSourceLanguage(TranslateLanguage.FRENCH)
+                        .setTargetLanguage(TranslateLanguage.ENGLISH)
+                        .build()
+                    val frenchEnglishTranslator = Translation.getClient(options)
+                    var conditions = DownloadConditions.Builder()
+                        .requireWifi()
+                        .build()
+                    frenchEnglishTranslator.downloadModelIfNeeded(conditions)
+                        .addOnSuccessListener {
+                            translateNow(frenchEnglishTranslator, text)
                         }
-                    }
-                })
-
-                tts.setOnUtteranceProgressListener(object : UtteranceProgressListener() {
-                    override fun onStart(utteranceId: String) {
-                        print("TTS started")
-                    }
-
-                    override fun onDone(utteranceId: String) {
-                        activity?.runOnUiThread {
-                            val bundle = Bundle()
-                            bundle.putString("text", text)
-                            bundle.putString("title", "Image text")
-                            bundle.putString("audioPath", path)
-
-                            setFragmentResult("mediaPlayerDocument", bundle)
-                            findNavController().navigate(R.id.action_viewPictureFragment_to_mediaPlayerFragment)
+                        .addOnFailureListener { exception ->
+                            displayError("Translation failed")
+                            processTextToSpeech(text)
                         }
-                    }
-
-                    override fun onError(utteranceId: String) {
-                        Log.e("TTS error",utteranceId)
-                        displayError("Text-to-Speech failed")
-                        thisActivity.supportFragmentManager.popBackStackImmediate()
-                    }
-                })
+                } else {
+                    processTextToSpeech(text)
+                }
             }.addOnFailureListener { e ->
                 displayError("Text extraction from image failed")
                 this.requireActivity().supportFragmentManager.popBackStackImmediate()
             }
+    }
+
+    fun translateNow(translator: Translator, text: String) {
+        translator.translate(text)
+            .addOnSuccessListener { translatedText ->
+                processTextToSpeech(translatedText)
+            }
+            .addOnFailureListener { exception ->
+                displayError("Translation failed")
+                processTextToSpeech(text)
+            }
+    }
+
+    fun processTextToSpeech(text: String) {
+        //Text to speech API
+        progressText.text = getString(R.string.tts_progress)
+        lateinit var tts: TextToSpeech
+        val path = activity?.filesDir?.absolutePath+"/audio.mp3"
+
+        tts = TextToSpeech(activity, object: TextToSpeech.OnInitListener{
+            override fun onInit(p0: Int) {
+                if (p0 == TextToSpeech.SUCCESS) {
+                    tts.language = Locale.CANADA
+                    tts.synthesizeToFile(text,null, File(path),"audio.mp3")
+                }
+            }
+        })
+
+        tts.setOnUtteranceProgressListener(object : UtteranceProgressListener() {
+            override fun onStart(utteranceId: String) {
+                print("TTS started")
+            }
+
+            override fun onDone(utteranceId: String) {
+                activity?.runOnUiThread {
+                    val bundle = Bundle()
+                    bundle.putString("text", text)
+                    bundle.putString("title", "Image text")
+                    bundle.putString("audioPath", path)
+
+                    setFragmentResult("mediaPlayerDocument", bundle)
+                    findNavController().navigate(R.id.action_viewPictureFragment_to_mediaPlayerFragment)
+                }
+            }
+
+            override fun onError(utteranceId: String) {
+                Log.e("TTS error",utteranceId)
+                displayError("Text-to-Speech failed")
+                activity?.supportFragmentManager?.popBackStackImmediate()
+            }
+        })
     }
 
     fun rotateImage(source: Bitmap, angle: Float): Bitmap? {
@@ -203,4 +247,5 @@ class ViewPictureFragment : Fragment() {
                 }
             }
     }
+
 }
