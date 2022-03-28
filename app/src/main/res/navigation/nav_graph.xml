@@ -10,6 +10,11 @@
         android:label="activity_main"
         tools:layout="@layout/activity_main" />
     <fragment
+        android:id="@+id/category_fragment"
+        android:name="com.example.readingassistant.fragments.CategoryFragment"
+        android:label="Gallery"
+        tools:layout="@layout/category_fragment_list"/>
+    <fragment
         android:id="@+id/chooseInputMethodFragment"
         android:name="com.example.readingassistant.fragments.ChooseInputMethodFragment"
         android:label="@string/media_player_fragment_label"
@@ -29,6 +34,9 @@
         <action
             android:id="@+id/action_mainMenuFragment_to_chooseInputMethodFragment3"
             app:destination="@id/chooseInputMethodFragment" />
+        <action
+            android:id="@+id/action_mainMenuFragment_to_category_fragment"
+            app:destination="@id/category_fragment" />
     </fragment>
     <fragment
         android:id="@+id/viewPictureFragment"

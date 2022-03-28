@@ -36,7 +36,7 @@ class CategoryRecyclerViewAdapter(private val categories: ArrayList<Category>) :
     override fun onBindViewHolder(holder: CategoryItem, position: Int) {
         val category = categories[position]
         val imageView =holder.imageView
-        val imagePath = category.pictrues[0].url
+        val imagePath = ""// category.pictrues[0].url
         Persistence.mainActivity.runOnUiThread(Thread{
             print(imagePath)
             val url = URL(imagePath)

@@ -5,5 +5,5 @@ import com.google.firebase.database.IgnoreExtraProperties
 @IgnoreExtraProperties
 data class Category(var title: String = "",
                     var desc: String = "",
-                    var pictrues: List<Picture> = ArrayList()
+                    var pictrues: Map<String,Picture> = HashMap()
 )

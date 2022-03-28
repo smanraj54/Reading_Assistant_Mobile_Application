@@ -11,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.example.readingassistant.R
 import com.example.readingassistant.adapters.CategoryRecyclerViewAdapter
+import com.example.readingassistant.adapters.ImageRecyclerViewAdapter
 import com.example.readingassistant.model.Category
 import com.example.readingassistant.persistence.Persistence
 import com.google.firebase.database.core.utilities.encoding.CustomClassMapper
@@ -41,16 +42,16 @@ class CategoryFragment : Fragment() {
         val categories = database.getReference("categorys")
         categories.get().addOnCompleteListener{task ->
             if (!task.isSuccessful) return@addOnCompleteListener;
-            val result = task.result
-            val arrayList = result.value as ArrayList<*>
+            val result = task.result.children
 
-            for ( a in arrayList) {
-                val category = CustomClassMapper.convertToCustomClass(a, Category::class.java)
+            for ( r in result) {
+                println(r.toString())
+                val category = CustomClassMapper.convertToCustomClass(r.value, Category::class.java)
                 Persistence.categories.add(category)
-                Log.d("A", category.toString());
+               // Log.d("A", category.toString());
             }
 
-            val listRecyclerViewAdapter = CategoryRecyclerViewAdapter(Persistence.categories)
+            val listRecyclerViewAdapter = ImageRecyclerViewAdapter(Persistence.categories[0].pictrues)
             recyclerView.adapter = listRecyclerViewAdapter
         }
 
