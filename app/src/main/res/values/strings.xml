@@ -12,4 +12,12 @@
     <string name="main_menu_fragment_label">Main Menu</string>
     <string name="camera_fragment_label">Camera</string>
     <string name="magnifier_fragment_label">Magnifier</string>
+    <!-- Strings for registeration page -->
+    <string name="user_prompt">User Type</string>
+    <string-array name="userType">
+        <item>Care Seeker</item>
+        <item>Care Taker</item>
+    </string-array>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
