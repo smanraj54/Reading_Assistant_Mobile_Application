@@ -49,7 +49,6 @@ class CategoryFragment : Fragment() {
                 println(r.toString())
                 val category = CustomClassMapper.convertToCustomClass(r.value, Category::class.java)
                 Persistence.categories.add(category)
-               // Log.d("A", category.toString());
             }
             var pictureList: ArrayList<Picture> = ArrayList()
             for (p in Persistence.categories[0].pictrues.entries){
@@ -59,15 +58,6 @@ class CategoryFragment : Fragment() {
             recyclerView.adapter = listRecyclerViewAdapter
         }
 
-        recyclerView.setOnClickListener { view->
-           /* val bundle = Bundle()
-            bundle.putString("photoURI", text)
-            bundle.putString("title", "Image text")
-            bundle.putString("audioPath", path)
-
-            setFragmentResult("photoURIBundle", bundle)
-            findNavController().navigate(R.id.category_fragment_to_mediaPlayerFragment)*/
-        }
     }
 
 }

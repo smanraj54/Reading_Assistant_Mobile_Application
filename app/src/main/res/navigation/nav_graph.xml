@@ -16,7 +16,7 @@
         tools:layout="@layout/category_fragment_list">
         <action
             android:id="@+id/category_fragment_to_mediaPlayerFragment"
-            app:destination="@id/viewPictureFragment" />
+            app:destination="@id/mediaPlayerFragment" />
     </fragment>
     <fragment
         android:id="@+id/chooseInputMethodFragment"
