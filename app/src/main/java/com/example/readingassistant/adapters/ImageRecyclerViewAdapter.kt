@@ -11,21 +11,15 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.setFragmentResult
-import androidx.navigation.Navigation.findNavController
 import androidx.navigation.findNavController
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.readingassistant.R
 import com.example.readingassistant.model.Picture
 import com.example.readingassistant.persistence.Persistence
-import com.google.firebase.database.ktx.database
-import com.google.firebase.ktx.Firebase
-import com.google.firebase.storage.FirebaseStorage
 import java.io.File
 import java.io.InputStream
 import java.net.HttpURLConnection
 import java.net.URL
-import java.time.LocalDateTime
 import java.util.*
 import kotlin.collections.ArrayList
 
