@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.Toast
 import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
@@ -88,7 +89,6 @@ class CameraFragment : Fragment() {
         } else {
             print("Permissions Error")
             this.activity?.let { ActivityCompat.requestPermissions(it, REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS) }
-            // TODO: loop back to the permissions. if the permission isnt already given, then the camera wont open right after it. I THINK. Figure it out.
         }
 
         // Image Capturing
@@ -100,11 +100,15 @@ class CameraFragment : Fragment() {
                 .Builder(outputFile)
                 .build()
             val thisActivity = this.activity?.let { it1 -> ContextCompat.getMainExecutor(it1) }
+            val activityObject = this.activity
             imageCapture?.takePicture(outputOptions,
                 thisActivity!!,
                 object : ImageCapture.OnImageSavedCallback {
                     override fun onError(error: ImageCaptureException) {
-                        // TODO: error handling
+                        displayError("Text extraction from image failed")
+                        if (activityObject != null) {
+                            activityObject.supportFragmentManager.popBackStackImmediate()
+                        }
                     }
 
                     override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
@@ -112,7 +116,7 @@ class CameraFragment : Fragment() {
                         bundle.putString("photoURI", outputFile.absolutePath)
                         bundle.putString("case", "camera")
                         setFragmentResult("photoURIBundle", bundle)
-                        findNavController().navigate(R.id.viewPictureFragment)
+                        findNavController().navigate(R.id.action_cameraFragment_to_viewPictureFragment)
                     }
                 })
         })
@@ -120,6 +124,10 @@ class CameraFragment : Fragment() {
 
     private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
         this.activity?.let { it1 -> ContextCompat.checkSelfPermission(it1.baseContext, it) } == PackageManager.PERMISSION_GRANTED
+    }
+
+    private fun displayError(message: String) {
+        Toast.makeText(this.activity, message, Toast.LENGTH_SHORT).show()
     }
 
     companion object {
