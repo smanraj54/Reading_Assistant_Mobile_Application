@@ -3,8 +3,32 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="..\:/Users/Aryan/AndroidStudioProjects/finalproject/app/src/main/res/layout/fragment_login.xml" value="0.25416666666666665" />
-        <entry key="..\:/Users/Aryan/AndroidStudioProjects/finalproject/app/src/main/res/layout/fragment_register.xml" value="0.25416666666666665" />
+        <entry key="..\:/Dalhousie_University/Winter_2022/CSCI_5708/Group_Work/ReadingAssistant/app/src/main/res/layout/activity_main.xml" value="0.264" />
+        <entry key="..\:/Dalhousie_University/Winter_2022/CSCI_5708/Group_Work/ReadingAssistant/app/src/main/res/layout/fragment_camera.xml" value="0.25416666666666665" />
+        <entry key="..\:/Dalhousie_University/Winter_2022/CSCI_5708/Group_Work/ReadingAssistant/app/src/main/res/layout/fragment_choose_input_method.xml" value="0.6" />
+        <entry key="..\:/Dalhousie_University/Winter_2022/CSCI_5708/Group_Work/ReadingAssistant/app/src/main/res/layout/fragment_main_menu.xml" value="0.25416666666666665" />
+        <entry key="..\:/Dalhousie_University/Winter_2022/CSCI_5708/Group_Work/ReadingAssistant/app/src/main/res/layout/fragment_main_menu3.xml" value="0.25416666666666665" />
+        <entry key="..\:/Dalhousie_University/Winter_2022/CSCI_5708/Group_Work/ReadingAssistant/app/src/main/res/layout/fragment_view_picture.xml" value="0.25416666666666665" />
+        <entry key="app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.169" />
+        <entry key="app/src/main/res/drawable/ic_baseline_add_circle_24.xml" value="0.169" />
+        <entry key="app/src/main/res/drawable/ic_baseline_arrow_back_24.xml" value="0.169" />
+        <entry key="app/src/main/res/drawable/ic_baseline_circle_20.xml" value="0.169" />
+        <entry key="app/src/main/res/drawable/ic_baseline_play_arrow_24.xml" value="0.169" />
+        <entry key="app/src/main/res/drawable/ic_baseline_play_circle_filled_24.xml" value="0.169" />
+        <entry key="app/src/main/res/drawable/ic_baseline_remove_circle_24.xml" value="0.169" />
+        <entry key="app/src/main/res/drawable/ic_baseline_stop_circle_24.xml" value="0.169" />
+        <entry key="app/src/main/res/drawable/ic_launcher_background.xml" value="0.169" />
+        <entry key="app/src/main/res/drawable/imageview_navyblue_border.xml" value="0.169" />
+        <entry key="app/src/main/res/layout/activity_main.xml" value="0.15070921985815602" />
+        <entry key="app/src/main/res/layout/content_example.xml" value="0.1890625" />
+        <entry key="app/src/main/res/layout/fragment_camera.xml" value="0.15520833333333334" />
+        <entry key="app/src/main/res/layout/fragment_choose_input_method.xml" value="0.15520833333333334" />
+        <entry key="app/src/main/res/layout/fragment_login.xml" value="0.12590579710144928" />
+        <entry key="app/src/main/res/layout/fragment_magnification_camera.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/fragment_main_menu3.xml" value="0.18070068359375002" />
+        <entry key="app/src/main/res/layout/fragment_media_player.xml" value="0.1614654541015625" />
+        <entry key="app/src/main/res/layout/fragment_register.xml" value="0.12590579710144928" />
+        <entry key="app/src/main/res/layout/fragment_view_picture.xml" value="0.1173334757486979" />
       </map>
     </option>
   </component>

@@ -83,7 +83,6 @@ class RegisterFragment : Fragment() {
                         curUserDb?.child("lastname")?.setValue(lastName.text.toString())
                         findNavController().navigate(R.id.mainMenuFragment)
                         Toast.makeText(this.activity, "Registration Successful", Toast.LENGTH_SHORT).show()
-                        activity?.finish()
                     } else{
                         Toast.makeText(this.activity, "Registration Failed, Please try again", Toast.LENGTH_SHORT).show()
                     }
