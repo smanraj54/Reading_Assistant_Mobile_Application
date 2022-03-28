@@ -10,6 +10,7 @@ import android.widget.ImageButton
 import com.example.readingassistant.R
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.contract.ActivityResultContracts
@@ -17,7 +18,6 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.setFragmentResult
 import androidx.navigation.fragment.findNavController
 import com.example.readingassistant.Constants
-
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -57,8 +57,6 @@ class ChooseInputMethodFragment : Fragment() {
 
         cameraButton.setOnClickListener(View.OnClickListener {
             findNavController().navigate(R.id.cameraFragment)
-//            val intent = Intent("android.media.action.IMAGE_CAPTURE")
-//            openCameraResult.launch(intent)
         })
 
         galleryButton.setOnClickListener(View.OnClickListener {
@@ -67,15 +65,6 @@ class ChooseInputMethodFragment : Fragment() {
             openGalleryResult.launch(intent)
         })
     }
-
-    val openCameraResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult(), ActivityResultCallback {
-            result: ActivityResult ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            val intent = result.data
-            // Handle the Intent
-            //do stuff here
-        }
-    })
 
     val openGalleryResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult(), ActivityResultCallback {
             result: ActivityResult ->
@@ -87,18 +76,14 @@ class ChooseInputMethodFragment : Fragment() {
             setFragmentResult("photoURIBundle", bundle)
             findNavController().navigate(R.id.action_chooseInputMethodFragment_to_viewPictureFragment)
         } else {
-            // handle error
+            displayError("Gallery could not be opened")
+            this.requireActivity().supportFragmentManager.popBackStackImmediate()
         }
     })
 
-    private fun allPermissionGranted() =
-        Constants.REQUIRED_PERMISSIONS.all{
-            this.activity?.let { it1 ->
-                ContextCompat.checkSelfPermission(
-                    it1.baseContext, it
-                )
-            } == PackageManager.PERMISSION_GRANTED
-        }
+    private fun displayError(message: String) {
+        Toast.makeText(activity, message, Toast.LENGTH_LONG).show()
+    }
 
 
     companion object {
