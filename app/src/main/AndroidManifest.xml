@@ -31,5 +31,6 @@
             android:value="ocr" />
         <!-- To use mlkit models; OCR - optical character recognition model in this case -->
     </application>
+    <uses-permission android:name="android.permission.INTERNET"/>
 
 </manifest>

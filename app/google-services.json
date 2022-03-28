@@ -2,7 +2,8 @@
   "project_info": {
     "project_number": "299892973945",
     "project_id": "reading-assistant-5b9e1",
-    "storage_bucket": "reading-assistant-5b9e1.appspot.com"
+    "storage_bucket": "reading-assistant-5b9e1.appspot.com",
+    "firebase_url": "https://reading-assistant-5b9e1-default-rtdb.firebaseio.com/"
   },
   "client": [
     {

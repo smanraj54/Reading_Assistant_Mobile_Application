@@ -5,16 +5,18 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.ImageButton
 import androidx.fragment.app.setFragmentResult
+import android.widget.Toast
 import androidx.navigation.fragment.findNavController
 import com.example.readingassistant.R
+import com.google.firebase.auth.FirebaseAuth
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
+lateinit var auth: FirebaseAuth
 
 /**
  * A simple [Fragment] subclass.
@@ -55,6 +57,15 @@ class MainMenuFragment : Fragment() {
             bundle.putString("translate", "true")
             setFragmentResult("actionBundle", bundle)
             findNavController().navigate(R.id.chooseInputMethodFragment)
+        }
+        view.findViewById<ImageButton>(R.id.toGalleryButton).setOnClickListener {
+            findNavController().navigate(R.id.action_mainMenuFragment_to_category_fragment)
+        }
+        view.findViewById<ImageButton>(R.id.logoutBtn).setOnClickListener {
+            auth = FirebaseAuth.getInstance()
+            auth.signOut()
+            Toast.makeText(this.activity, "Logged-Out!", Toast.LENGTH_SHORT).show()
+            findNavController().navigate(R.id.loginFragment)
         }
     }
 

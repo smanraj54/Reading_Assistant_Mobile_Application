@@ -5,6 +5,7 @@ import android.graphics.BitmapFactory
 import android.graphics.Matrix
 import android.media.ExifInterface
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.speech.tts.TextToSpeech
 import android.speech.tts.UtteranceProgressListener
@@ -12,6 +13,12 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.ImageView
+import android.widget.ProgressBar
+import android.widget.TextView
+import androidx.annotation.RequiresApi
+import androidx.core.net.toUri
 import android.widget.*
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -22,10 +29,17 @@ import com.example.readingassistant.R
 import com.google.mlkit.common.model.DownloadConditions
 import com.google.mlkit.nl.translate.*
 import com.google.mlkit.nl.translate.TranslateRemoteModel.*
+import com.example.readingassistant.model.Picture
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.FirebaseStorage
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.TextRecognition
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions
 import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
+import java.time.LocalDateTime
 import java.util.*
 
 
@@ -43,6 +57,7 @@ class ViewPictureFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
+    private lateinit var photoToSave: Uri
 
     private lateinit var progressBar: ProgressBar
     private lateinit var progressText: TextView
@@ -75,8 +90,9 @@ class ViewPictureFragment : Fragment() {
 
         var inputImage: InputImage? = null
         setFragmentResultListener("photoURIBundle") {requestKey, bundle ->
-            val photoURI = bundle.getString("photoURI")
+            var photoURI = bundle.getString("photoURI")
             var bitmap: Bitmap?
+            photoToSave = Uri.parse(photoURI)
 
             if (bundle.getString("translate") == "true") {
                 this.translate = true
@@ -108,8 +124,18 @@ class ViewPictureFragment : Fragment() {
                 inputImage = rotatedBitmap?.let { InputImage.fromBitmap(it, 0) }
                 val imageView: ImageView = view.findViewById(R.id.imageView) as ImageView
                 imageView.setImageBitmap(rotatedBitmap)
+                //https://stackoverflow.com/a/673014
+                try {
+                    val outputDir = requireContext().cacheDir
+                    val outputFile: File = File.createTempFile("tempImageFile", ".jpg", outputDir)
+                   FileOutputStream(outputFile.absolutePath).use { out ->
+                        rotatedBitmap!!.compress(Bitmap.CompressFormat.PNG,100,out)
+                   }
+                    photoToSave = outputFile.toUri()
+                } catch (e: IOException) {
+                    e.printStackTrace()
+                }
             }
-
         }
 
         val readFromImageButton = view.findViewById<Button>(R.id.readFromImageButton)
@@ -195,7 +221,19 @@ class ViewPictureFragment : Fragment() {
                 print("TTS started")
             }
 
+            @RequiresApi(Build.VERSION_CODES.O)
             override fun onDone(utteranceId: String) {
+                val database = Firebase.database.reference
+                val storage = FirebaseStorage.getInstance().reference.child(LocalDateTime.now().toString()+".png")
+                val uploadPhoto = storage.putFile(photoToSave)
+                uploadPhoto.addOnSuccessListener {
+                    it.metadata?.reference?.downloadUrl?.addOnCompleteListener { task ->
+                        val url = task.result.toString()
+                        val picture = Picture("","",url,text)
+                        val category = database.child("categorys/1/pictrues").push().setValue(picture)                         }
+                }.addOnFailureListener {
+                    Log.e("Image save failure",it.toString())
+                }
                 activity?.runOnUiThread {
                     val bundle = Bundle()
                     bundle.putString("text", text)
