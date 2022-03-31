@@ -42,6 +42,7 @@
         android:textColor="#000000"
         android:layout_margin="10dp"
         />
+
     <EditText android:id="@+id/usernameInput"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -79,7 +80,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/typeUser" />
+        app:layout_constraintTop_toBottomOf="@+id/passwordInput"
+        />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
