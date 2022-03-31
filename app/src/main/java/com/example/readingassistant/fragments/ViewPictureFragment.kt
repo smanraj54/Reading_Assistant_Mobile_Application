@@ -28,7 +28,6 @@ import androidx.navigation.fragment.findNavController
 import com.example.readingassistant.R
 import com.google.mlkit.common.model.DownloadConditions
 import com.google.mlkit.nl.translate.*
-import com.google.mlkit.nl.translate.TranslateRemoteModel.*
 import com.example.readingassistant.model.Picture
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
@@ -42,23 +41,13 @@ import java.io.IOException
 import java.time.LocalDateTime
 import java.util.*
 
-
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
 /**
- * A simple [Fragment] subclass.
- * Use the [ViewPictureFragment.newInstance] factory method to
- * create an instance of this fragment.
+ * This class is used to create ViewPictureFragment.
+ * This fragment will allow the user to view the image clicked using the camera or selected from the gallery before proceeding to the Translation or Gallery
+ * @constructor Creates ViewPictureFragment object
  */
 class ViewPictureFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
     private lateinit var photoToSave: Uri
-
     private lateinit var progressBar: ProgressBar
     private lateinit var progressText: TextView
 
@@ -66,10 +55,6 @@ class ViewPictureFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
     }
 
     override fun onCreateView(
@@ -81,6 +66,10 @@ class ViewPictureFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        /**
+         * Sets initial state of the views in the fragment.
+         * Adds OnCLickListener for the buttons in the Main Menu and actions related to those clicks.
+         */
         super.onViewCreated(view, savedInstanceState)
 
         progressBar = view.findViewById(R.id.progressBar)
@@ -104,7 +93,7 @@ class ViewPictureFragment : Fragment() {
                 inputImage = InputImage.fromBitmap(bitmap, 0)
                 val imageView: ImageView = view.findViewById(R.id.imageView) as ImageView
                 imageView.setImageBitmap(bitmap)
-            } else { // if (bundle.getString("case") == "camera") {
+            } else if (bundle.getString("case") == "camera") {
                 bitmap = BitmapFactory.decodeFile(photoURI)
                 val ei = ExifInterface(photoURI.toString())
                 val orientation: Int = ei.getAttributeInt(
@@ -113,7 +102,7 @@ class ViewPictureFragment : Fragment() {
                 )
 
                 var rotatedBitmap: Bitmap? = null
-                when (orientation) {
+                when (orientation) { // Orientation of an image needs to be set appropriately after an image is taken
                     ExifInterface.ORIENTATION_ROTATE_90 -> rotatedBitmap = rotateImage(bitmap, 90F)
                     ExifInterface.ORIENTATION_ROTATE_180 -> rotatedBitmap = rotateImage(bitmap, 180F)
                     ExifInterface.ORIENTATION_ROTATE_270 -> rotatedBitmap = rotateImage(bitmap, 270F)
@@ -124,7 +113,7 @@ class ViewPictureFragment : Fragment() {
                 inputImage = rotatedBitmap?.let { InputImage.fromBitmap(it, 0) }
                 val imageView: ImageView = view.findViewById(R.id.imageView) as ImageView
                 imageView.setImageBitmap(rotatedBitmap)
-                //https://stackoverflow.com/a/673014
+                // Citation: [13]
                 try {
                     val outputDir = requireContext().cacheDir
                     val outputFile: File = File.createTempFile("tempImageFile", ".jpg", outputDir)
@@ -154,6 +143,11 @@ class ViewPictureFragment : Fragment() {
     }
 
     private fun performOCR(inputImage: InputImage) {
+        /**
+         * Performs Optical Character Recognition over an image to extract text from the image
+         * Uses Google MLKit's Text Recognition APIs
+         * @param inputImage Image of type InputImage Object
+         */
         progressText.text = getString(R.string.ocr_progress)
         val recognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS)
         val result = recognizer.process(inputImage)
@@ -191,6 +185,12 @@ class ViewPictureFragment : Fragment() {
     }
 
     fun translateNow(translator: Translator, text: String) {
+        /**
+         * Translated the text from one language to another, as specified in the TranslationModel object
+         * Uses Google MLKit's Translation APIs
+         * @param translator Translator object which will process the request
+         * @param text String to be translated
+         */
         translator.translate(text)
             .addOnSuccessListener { translatedText ->
                 processTextToSpeech(translatedText)
@@ -202,7 +202,11 @@ class ViewPictureFragment : Fragment() {
     }
 
     fun processTextToSpeech(text: String) {
-        //Text to speech API
+        /**
+         * Converts text to synthetic speech
+         * Uses Android's Text-to-Speech TTS APIs
+         * @param text String to be converted to speech
+         */
         progressText.text = getString(R.string.tts_progress)
         lateinit var tts: TextToSpeech
         val path = activity?.filesDir?.absolutePath+"/audio.mp3"
@@ -254,6 +258,12 @@ class ViewPictureFragment : Fragment() {
     }
 
     fun rotateImage(source: Bitmap, angle: Float): Bitmap? {
+        /**
+        * Rotates the input bitmap
+        * Citation: [13]
+        * @param source Image bitmap which has to be rotated
+         * @param angle Angle with which the bitmap is to be rotated
+         */
         val matrix = Matrix()
         matrix.postRotate(angle)
         return Bitmap.createBitmap(
@@ -263,27 +273,11 @@ class ViewPictureFragment : Fragment() {
     }
 
     private fun displayError(message: String) {
-        Toast.makeText(this.activity, message, Toast.LENGTH_SHORT).show()
-    }
-
-    companion object {
         /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment ViewPictureFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            ViewPictureFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
+        * Displays Toast on error
+        * @param message Error message to be displayed in the toast
+        */
+        Toast.makeText(this.activity, message, Toast.LENGTH_SHORT).show()
     }
 
 }

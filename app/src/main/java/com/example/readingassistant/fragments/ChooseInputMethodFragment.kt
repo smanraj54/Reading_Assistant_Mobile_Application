@@ -9,40 +9,25 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import com.example.readingassistant.R
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.setFragmentResultListener
 import androidx.navigation.fragment.findNavController
-import com.example.readingassistant.Constants
-
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
 /**
- * A simple [Fragment] subclass.
- * Use the [ChooseInputMethodFragment.newInstance] factory method to
- * create an instance of this fragment.
+ * This class is used to create ChooseInputMethodFragment.
+ * This fragment will allow the user to open Camera View to capture an image or open Phone Gallery to select and image
+ * @constructor Creates ChooseInputMethodFragment object
  */
 class ChooseInputMethodFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
     private var navigationBundle: Bundle? = Bundle()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
 
         setFragmentResultListener("actionBundle") { requestKey, bundle ->
             if (bundle.getString("translate") == "true") {
@@ -59,7 +44,11 @@ class ChooseInputMethodFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_choose_input_method, container, false)
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) { //change
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        /**
+         * Sets initial state of the views in the fragment.
+         * Adds OnCLickListener for the buttons and actions related to those clicks.
+         */
         super.onViewCreated(view, savedInstanceState)
         val cameraButton = view.findViewById<ImageButton>(R.id.openCameraButton)
         val galleryButton = view.findViewById<ImageButton>(R.id.openGalleryButton)
@@ -77,6 +66,9 @@ class ChooseInputMethodFragment : Fragment() {
     }
 
     val openGalleryResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult(), ActivityResultCallback {
+        /**
+         * ActivityResultCallback would allow us to access the image selected by the user from the device gallery
+         */
             result: ActivityResult ->
         if (result.resultCode == Activity.RESULT_OK) {
             val photoURI = result.data?.data
@@ -91,27 +83,10 @@ class ChooseInputMethodFragment : Fragment() {
     })
 
     private fun displayError(message: String) {
-        Toast.makeText(activity, message, Toast.LENGTH_LONG).show()
-    }
-
-
-    companion object {
         /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment ChooseInputMethodFragment.
+         * Displays Toast on error
+         * @param message Error message to be displayed in the toast
          */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            ChooseInputMethodFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
+        Toast.makeText(activity, message, Toast.LENGTH_LONG).show()
     }
 }
