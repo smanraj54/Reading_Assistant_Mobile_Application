@@ -35,92 +35,56 @@ private const val ARG_PARAM2 = "param2"
  * create an instance of this fragment.
  */
 class MagnificationCameraFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
-//    private lateinit var binding: ActivityMainBinding
-//    private var imageCapture:ImageCapture?=null
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
 
 
 
     }
 
+    // After the view is created performing the magnification of camera view and flash control
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        //Checking all the required permissions if not available then asking for it
         if (allPermissionGranted()) {
             lateinit var cameraProviderFuture : ListenableFuture<ProcessCameraProvider>
+            //Getting the camera provider
             cameraProviderFuture = this.activity?.let { ProcessCameraProvider.getInstance(it) } as ListenableFuture<ProcessCameraProvider>
 
+            //Getting the camera preview object which is used in the layout
             val previewView = view.findViewById<PreviewView>(R.id.previewView)
 
+            //Using listener of the camera provider to manipulate camera operations of the device
             cameraProviderFuture.addListener(Runnable {
+
                 val cameraProvider = cameraProviderFuture.get()
                 var preview : Preview = Preview.Builder()
                     .build()
 
+                //selecting the default camera to open the view on device
+                //by default back facing lens is used in the application
                 var cameraSelector : CameraSelector = CameraSelector.Builder()
                     .requireLensFacing(CameraSelector.LENS_FACING_BACK)
                     .build()
 
                 preview.setSurfaceProvider(previewView.surfaceProvider)
 
+                //getting camera variable from the camera provider object
                 var camera = cameraProvider.bindToLifecycle(this as LifecycleOwner, cameraSelector, preview)
-                //Torch
+                //Torch is enabled by default while opening the magnification feature
                 camera.cameraControl.enableTorch(true)
-                //zoomIn
 
-                val btnZoomIn = view.findViewById<Button>(R.id.btnZoomIn)
-                val btnZoomOut = view.findViewById<Button>(R.id.btnZoomOut)
-                val btnFlash = view.findViewById<Button>(R.id.btnFlash)
-                //camera.cameraControl.enableTorch(true)
+                // controlling the flash with the click of a button on camera view
+                flashControl(view, camera)
 
-                //btnFlash.setForeground(R.drawable.flashoff)
-
-                btnFlash.setOnClickListener(View.OnClickListener {
-                    if(btnFlash.text.toString() == "Flash On"){
-                        camera.cameraControl.enableTorch(true)
-                    }
-                    else{
-                        camera.cameraControl.enableTorch(false)
-                    }
-
-                })
-
+                //variable to track the zoom level
                 var zoomLevel = 0.0
-                btnZoomOut.setEnabled(false)
-                btnZoomIn.setOnClickListener(View.OnClickListener {
-                    if(zoomLevel<1.0) {
-                        zoomLevel += 0.10
-                        camera.cameraControl.setLinearZoom(zoomLevel.toFloat())
-                        btnZoomOut.setEnabled(true)
-                    }
-                    else{
-                        //disable ZoomIn Button
-                        btnZoomIn.setEnabled(false)
 
-                    }
-
-                })
-                btnZoomOut.setOnClickListener(View.OnClickListener {
-                    if(zoomLevel>0) {
-                        zoomLevel -= 0.10
-                        camera.cameraControl.setLinearZoom(zoomLevel.toFloat())
-                        btnZoomIn.setEnabled(true)
-                    }
-                    else{
-                        //disable ZoomOut Button
-                        btnZoomOut.setEnabled(false)
-                    }
-
-                })
-
+                //controlling the magnification level of the camera view
+                zoomLevel = magnificationControl(view, camera, zoomLevel)
 
             }, ContextCompat.getMainExecutor(this.requireActivity()))
 
@@ -133,6 +97,71 @@ class MagnificationCameraFragment : Fragment() {
     }
 
 
+    // private function to control flash of the device on a button click
+    private fun flashControl(view: View, camera: Camera){
+        val btnFlash = view.findViewById<Button>(R.id.btnFlash)
+
+        //changing the status of flash which tracking the button's status
+        btnFlash.setOnClickListener(View.OnClickListener {
+            if(btnFlash.text.toString() == "Flash On"){
+                camera.cameraControl.enableTorch(true)
+            }
+            else{
+                camera.cameraControl.enableTorch(false)
+            }
+
+        })
+    }
+
+    //controlling the magnification of the camera view on buttons click
+    private fun magnificationControl(view: View, camera: Camera, currentZoomLevel: Double): Double{
+
+        //two buttons are used to control the camera magnification. Zoom-in and zoom-out
+        val btnZoomIn = view.findViewById<Button>(R.id.btnZoomIn)
+        val btnZoomOut = view.findViewById<Button>(R.id.btnZoomOut)
+
+        //this variable tracks the current zoom level
+        var zoomLevel = currentZoomLevel
+
+        //btnZoomOut.setEnabled(false)
+        //on click of zoom in button the variable is upated and the camera view is zoomed in
+        btnZoomIn.setOnClickListener(View.OnClickListener {
+            //if the camera view zoom is not max then zoom in the view
+            if(zoomLevel<1.0) {
+                zoomLevel += 0.10
+                //increasing the zoom of camera view
+                camera.cameraControl.setLinearZoom(zoomLevel.toFloat())
+                //zoom-out button is enabled
+                btnZoomOut.setEnabled(true)
+            }
+            else{
+                //disable ZoomIn Button
+                btnZoomIn.setEnabled(false)
+
+            }
+
+        })
+
+
+        //on click of zoom out button the variable is upated and the camera view is zoomed out
+        btnZoomOut.setOnClickListener(View.OnClickListener {
+            //if the camera view zoom is not minimum then zoom out the view
+            if(zoomLevel>0) {
+                zoomLevel -= 0.10
+                //decreasing the zoom of camera view
+                camera.cameraControl.setLinearZoom(zoomLevel.toFloat())
+                //zoom-in button is enabled
+                btnZoomIn.setEnabled(true)
+            }
+            else{
+                //disable ZoomOut Button
+                btnZoomOut.setEnabled(false)
+            }
+
+        })
+        //returning the current zoom state
+        return zoomLevel
+    }
 
     private fun allPermissionGranted() =
         Constants.REQUIRED_PERMISSIONS.all{
