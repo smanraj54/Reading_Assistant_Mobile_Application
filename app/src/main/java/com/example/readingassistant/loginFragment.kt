@@ -47,7 +47,7 @@ class loginFragment : Fragment() {
         auth= FirebaseAuth.getInstance()
 
         val currentUser = auth.currentUser
-
+        //checks if a user was signed in previosuly
         if(currentUser!=null){
             findNavController().navigate(R.id.mainMenuFragment)
         }
@@ -59,7 +59,7 @@ class loginFragment : Fragment() {
         val userName = view.findViewById<EditText>(R.id.usernameInput)
         val passWord = view.findViewById<EditText>(R.id.passwordInput)
         val regText= view.findViewById<TextView>(R.id.registerText)
-
+        //check that neither of the fields are empty
         loginBut.setOnClickListener {
             if (TextUtils.isEmpty(userName.text.toString())) {
                 userName.setError("Please enter Email")
@@ -68,9 +68,11 @@ class loginFragment : Fragment() {
                 passWord.setError("Please enter Password")
                 return@setOnClickListener
             }
+            //checks firebase for authentication
             auth.signInWithEmailAndPassword(userName.text.toString(), passWord.text.toString())
                 .addOnCompleteListener{
                     if(it.isSuccessful){
+                        //navigates to main menu if authentication was successful
                         Toast.makeText(this.activity, "Login Successful", Toast.LENGTH_SHORT).show()
                         findNavController().navigate(R.id.mainMenuFragment)
                     } else{
@@ -78,7 +80,7 @@ class loginFragment : Fragment() {
                     }
                 }
         }
-
+        //if user is not already registered
         regText.setOnClickListener{
             findNavController().navigate(R.id.registerFragment)
         }

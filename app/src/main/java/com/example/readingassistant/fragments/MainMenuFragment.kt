@@ -61,6 +61,7 @@ class MainMenuFragment : Fragment() {
         view.findViewById<ImageButton>(R.id.toGalleryButton).setOnClickListener {
             findNavController().navigate(R.id.action_mainMenuFragment_to_category_fragment)
         }
+        //logout button from firebase authentication
         view.findViewById<ImageButton>(R.id.logoutBtn).setOnClickListener {
             auth = FirebaseAuth.getInstance()
             auth.signOut()
