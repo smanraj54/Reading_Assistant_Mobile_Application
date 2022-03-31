@@ -46,6 +46,7 @@ class RegisterFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        //creates a databse instance
         auth = FirebaseAuth.getInstance()
         database = FirebaseDatabase.getInstance()
         databaseReference = database?.reference!!.child("profile")
@@ -60,6 +61,7 @@ class RegisterFragment : Fragment() {
         val userName = view.findViewById<EditText>(R.id.usernameInput)
         val passWord = view.findViewById<EditText>(R.id.passwordInput)
 
+        //checks that none of the fields are empty
         registerBut.setOnClickListener{
             if(TextUtils.isEmpty(firstName.text.toString())){
                 firstName.setError("Please enter first name")
@@ -74,14 +76,16 @@ class RegisterFragment : Fragment() {
                 passWord.setError("Please enter password ")
                 return@setOnClickListener
             }
+            //creates a user if none of the fields are empty
             auth.createUserWithEmailAndPassword(userName.text.toString(),passWord.text.toString())
                 .addOnCompleteListener{
                     if (it.isSuccessful){
                         val curUser = auth.currentUser
                         val curUserDb= databaseReference?.child(curUser?.uid!!)
+                        //saves to the database
                         curUserDb?.child("firstname")?.setValue(firstName.text.toString())
                         curUserDb?.child("lastname")?.setValue(lastName.text.toString())
-                        findNavController().navigate(R.id.mainMenuFragment)
+                        findNavController().navigate(R.id.mainMenuFragment) //navigates to mainmenu if successful registeration
                         Toast.makeText(this.activity, "Registration Successful", Toast.LENGTH_SHORT).show()
                     } else{
                         Toast.makeText(this.activity, "Registration Failed, Please try again", Toast.LENGTH_SHORT).show()

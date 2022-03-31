@@ -67,6 +67,7 @@ class MainMenuFragment : Fragment() {
         }
 
         // "Log Out" flow execution
+        // logout button from firebase authentication
         view.findViewById<ImageButton>(R.id.logoutBtn).setOnClickListener {
             auth = FirebaseAuth.getInstance()
             auth.signOut()
