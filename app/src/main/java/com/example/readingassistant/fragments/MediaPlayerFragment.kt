@@ -25,13 +25,13 @@ import com.example.readingassistant.databinding.FragmentMediaPlayerBinding
 import com.example.readingassistant.model.SpeedControl
 import java.io.File
 
-
+/**
+ * This class creates the media player fragment used for playing the audio
+ * file of the text derived from the input image
+ */
 class MediaPlayerFragment : Fragment() {
 
     private var _binding: FragmentMediaPlayerBinding? = null
-
-    // This property is only valid between onCreateView and
-    // onDestroyView.
     private val binding get() = _binding!!
 
     private var mediaPlayer: MediaPlayer = MediaPlayer()
@@ -44,10 +44,8 @@ class MediaPlayerFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
         _binding = FragmentMediaPlayerBinding.inflate(inflater, container, false)
         return binding.root
-
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -63,8 +61,9 @@ class MediaPlayerFragment : Fragment() {
         val increaseButton: Button = view.findViewById(R.id.increaseButton)
         val decreaseButton: Button = view.findViewById(R.id.decreaseButton)
         val seekBar: SeekBar = view.findViewById(R.id.seekBar)
-        val speedControl: SpeedControl = SpeedControl(DoubleArray(7){0.5 +(it*0.25)})
+        val speedControl = SpeedControl(DoubleArray(7){0.5 +(it*0.25)})
 
+        //get text and path of audio file
         setFragmentResultListener("mediaPlayerDocument") {requestKey, bundle ->
             val text = bundle.getString("text")
             val audioPath = bundle.getString("audioPath")
@@ -165,6 +164,7 @@ class MediaPlayerFragment : Fragment() {
         }
     }
 
+    //function to update the text displayed on the the speed buttons
     private fun updateSpeedButtons(speedControl: SpeedControl, increaseButton:Button, decreaseButton:Button) {
         if (speedControl.getMaxSpeed() == speedControl.getCurrentSpeed()) {
             increaseButton.text = getString(R.string.max_label)
@@ -253,6 +253,7 @@ class MediaPlayerFragment : Fragment() {
         seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(p0: SeekBar?, p1: Int, p2: Boolean) {
                 if (p2) {
+                    //adjust media player position if the seek bar is adjusted by user
                     mediaPlayer.seekTo(p1)
                 }
                 if (p1 == seekBar.max) {

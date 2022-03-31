@@ -1,5 +1,8 @@
 package com.example.readingassistant.model
-
+/**
+ * This class is used to manage the speed of the media player
+ * @param speeds array of possible speeds
+ */
 class SpeedControl(speeds:DoubleArray) {
     private var speeds:DoubleArray = speeds
     private var currentIndex:Int = speeds.size/2 - 1
