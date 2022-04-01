@@ -1,4 +1,4 @@
-package com.example.readingassistant
+package com.example.readingassistant.fragments
 
 import android.os.Bundle
 import android.text.TextUtils
@@ -10,6 +10,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.navigation.fragment.findNavController
+import com.example.readingassistant.R
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase

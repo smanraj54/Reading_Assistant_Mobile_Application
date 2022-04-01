@@ -1,4 +1,4 @@
-package com.example.readingassistant
+package com.example.readingassistant.fragments
 
 import android.os.Bundle
 import android.text.TextUtils
@@ -11,6 +11,7 @@ import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.navigation.fragment.findNavController
+import com.example.readingassistant.R
 import com.google.firebase.auth.FirebaseAuth
 
 class loginFragment : Fragment() {
